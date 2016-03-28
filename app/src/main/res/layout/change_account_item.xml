@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:scaleType="fitXY"
+        android:src="@drawable/icon"
+        android:id="@+id/changeAccount_item_image"
+        android:layout_width="70dp"
+        android:layout_height="70dp" />
+    <TextView
+        android:gravity="center_vertical"
+        android:textSize="20sp"
+        android:text="45646465"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/changeAccount_item_accountNameTxt"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+</LinearLayout>

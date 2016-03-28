@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TableLayout
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TableRow>
+            <TextView
+                android:textSize="20sp"
+                android:text="@string/account_number"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
+            <EditText
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                android:hint="@string/account_number_warn"
+                android:id="@+id/register_account_numberTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:textSize="20sp"
+                android:text="@string/password_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <EditText
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                android:hint="@string/password_warn"
+                android:id="@+id/register_passwordTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+    </TableLayout>
+    <Button
+        android:id="@+id/startRegisterBtn"
+        android:layout_marginTop="30dp"
+        android:textSize="20sp"
+        android:text="@string/register_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

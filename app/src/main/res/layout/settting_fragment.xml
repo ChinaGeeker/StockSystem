@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/setting_fragment_iconBtn"
+        android:src="@drawable/icon"
+        android:layout_width="70dp"
+        android:layout_height="70dp" />
+    <Button
+        android:text="@string/switchAccount"
+        android:layout_marginLeft="30dp"
+        android:id="@+id/switchAccountBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <Button
+        android:text="@string/lookLog"
+        android:layout_marginLeft="30dp"
+        android:id="@+id/lookLogBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <Button
+        android:text="@string/forbidUpdate"
+        android:layout_marginLeft="30dp"
+        android:id="@+id/forbidUpdateBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>

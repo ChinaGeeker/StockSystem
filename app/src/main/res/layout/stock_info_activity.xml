@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:textColor="@color/colorBlack"
+        android:textSize="20sp"
+        android:gravity="center_horizontal"
+        android:text="股票名称"
+        android:id="@+id/stockInfo_fragment_stockNameTxt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TableRow >
+            <RelativeLayout android:layout_marginTop="25dp">
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:text="股票编号:"
+                    android:textSize="18sp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
+                <TextView
+                    android:id="@+id/stockNumberTxt"
+                    android:layout_marginLeft="90dp"
+                    android:text="31546221"
+                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
+                <TextView
+                    android:layout_marginLeft="200dp"
+                    android:text="当前价格:"
+                    android:textSize="18sp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
+                <TextView
+                    android:id="@+id/stockCurPriceTxt"
+                    android:layout_marginLeft="280dp"
+                    android:text="59654.1"
+                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
+            </RelativeLayout>
+        </TableRow>
+        <TableRow >
+            <RelativeLayout android:layout_marginTop="15dp">
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:text="昨日收盘:"
+                    android:textSize="18sp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
+                <TextView
+                    android:id="@+id/stockClosingPriceTxt"
+                    android:layout_marginLeft="90dp"
+                    android:text="31546221"
+                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
+                <TextView
+                    android:layout_marginLeft="200dp"
+                    android:text="今日开盘:"
+                    android:textSize="18sp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
+                <TextView
+                    android:id="@+id/stockOpenPriceTxt"
+                    android:layout_marginLeft="280dp"
+                    android:text="59654.1"
+                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
+            </RelativeLayout>
+        </TableRow>
+        <TableRow >
+            <RelativeLayout android:layout_marginTop="15dp">
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:text="今最高价:"
+                    android:textSize="18sp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
+                <TextView
+                    android:id="@+id/stockMaxPriceTxt"
+                    android:layout_marginLeft="90dp"
+                    android:text="31546221"
+                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
+                <TextView
+                    android:layout_marginLeft="200dp"
+                    android:text="今最低价:"
+                    android:textSize="18sp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
+                <TextView
+                    android:id="@+id/stockMinPriceTxt"
+                    android:layout_marginLeft="280dp"
+                    android:text="59654.1"
+                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
+            </RelativeLayout>
+        </TableRow>
+    </TableLayout>
+    <Button
+        android:textSize="20sp"
+        android:id="@+id/deleteBtn"
+        android:text="删除"
+        android:gravity="center"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+    <ImageView
+        android:layout_weight="1"
+        android:layout_marginTop="25dp"
+        android:layout_gravity="center"
+        android:id="@+id/stockImage"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

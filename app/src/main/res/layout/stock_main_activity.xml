@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:background="@color/colorChocolate"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:textColor="@color/colorWhite"
+            android:textSize="18sp"
+            android:id="@+id/stock_accountNameTxt"
+            android:text="主界面"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:layout_marginLeft="30dp"
+            android:text="退出登录"
+            android:id="@+id/stock_exitBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <android.support.v4.view.ViewPager
+        android:layout_weight="1"
+        android:id="@+id/stock_main_viewPager"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+    </android.support.v4.view.ViewPager>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_weight="1"
+                android:src="@drawable/call_normal"
+                android:layout_width="70dp"
+                android:layout_height="70dp" />
+            <ImageView
+                android:layout_weight="1"
+                android:src="@drawable/message_normal"
+                android:layout_width="70dp"
+                android:layout_height="70dp" />
+            <ImageView
+                android:layout_weight="1"
+                android:src="@drawable/contact_normal"
+                android:layout_width="70dp"
+                android:layout_height="70dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:clickable="false"
+                android:alpha="0"
+                android:id="@+id/stock_listBtn"
+                android:layout_weight="1"
+                android:src="@drawable/call_selected"
+                android:layout_width="70dp"
+                android:layout_height="70dp" />
+            <ImageView
+                android:clickable="false"
+                android:alpha="0"
+                android:layout_weight="1"
+                android:id="@+id/history_recordBtn"
+                android:src="@drawable/message_selected"
+                android:layout_width="70dp"
+                android:layout_height="70dp" />
+            <ImageView
+                android:clickable="false"
+                android:alpha="0"
+                android:layout_weight="1"
+                android:id="@+id/stock_settingBtn"
+                android:src="@drawable/contact_selected"
+                android:layout_width="70dp"
+                android:layout_height="70dp" />
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>
