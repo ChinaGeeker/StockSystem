@@ -7,8 +7,16 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import example.ruanjian.stocksystem.utils.StockSystemUtils;
+import example.ruanjian.stocksystem.utils.StockUtils;
+import example.ruanjian.stocksystem.utils.AccountUtils;
+import example.ruanjian.stocksystem.utils.AccountStockUtils;
 import example.ruanjian.stocksystem.utils.StockSystemConstant;
+import example.ruanjian.stocksystem.utils.HistoryBrowsingUtils;
+import example.ruanjian.stocksystem.databases.sqlUtils.StockSQLUtils;
+import example.ruanjian.stocksystem.application.StockSystemApplication;
+import example.ruanjian.stocksystem.databases.sqlUtils.AccountSQLUtils;
+import example.ruanjian.stocksystem.databases.sqlUtils.AccountStockSQLUtils;
+import example.ruanjian.stocksystem.databases.sqlUtils.HistoryBrowsingSQLUtils;
 
 public class StockSystemSQLHelper extends SQLiteOpenHelper
 {
@@ -25,6 +33,10 @@ public class StockSystemSQLHelper extends SQLiteOpenHelper
         if (_instance == null)
         {
             _instance = new StockSystemSQLHelper(context, StockSystemConstant.STOCK_SYSTEM_DATABASES_NAME, null, 1);
+            StockUtils.stockSQLUtils = StockSQLUtils.getInstance();
+            AccountUtils.accountSQLUtils = AccountSQLUtils.getInstance();
+            AccountStockUtils.accountStockSQLUtils = AccountStockSQLUtils.getInstance();
+            HistoryBrowsingUtils.historyBrowsingSQLUtils = HistoryBrowsingSQLUtils.getInstance();
         }
         return _instance;
     }
@@ -69,7 +81,7 @@ public class StockSystemSQLHelper extends SQLiteOpenHelper
         } catch (SQLException e)
         {
             e.printStackTrace();
-            StockSystemUtils.printLog(StockSystemConstant.LOG_ERROR, "", e);
+            StockSystemApplication.getInstance().printLog(StockSystemConstant.LOG_ERROR, "", e);
         }
     }
 
@@ -90,7 +102,7 @@ public class StockSystemSQLHelper extends SQLiteOpenHelper
         } catch (Exception e)
         {
             e.printStackTrace();
-            StockSystemUtils.printLog(StockSystemConstant.LOG_ERROR, "", e);
+            StockSystemApplication.getInstance().printLog(StockSystemConstant.LOG_ERROR, "", e);
         }
         return cursor;
     }
@@ -105,7 +117,7 @@ public class StockSystemSQLHelper extends SQLiteOpenHelper
         } catch (Exception e)
         {
             e.printStackTrace();
-            StockSystemUtils.printLog(StockSystemConstant.LOG_ERROR, "", e);
+            StockSystemApplication.getInstance().printLog(StockSystemConstant.LOG_ERROR, "", e);
         }
         return result;
     }
@@ -140,8 +152,7 @@ public class StockSystemSQLHelper extends SQLiteOpenHelper
         {
             return -1;
         }
-        int result = _database.delete(table, whereClause, whereArgs);
-        return result;
+        return _database.delete(table, whereClause, whereArgs);
     }
 
 }

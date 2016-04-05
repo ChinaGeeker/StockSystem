@@ -3,6 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ImageView
+        android:contentDescription="@string/empty"
         android:scaleType="fitXY"
         android:id="@+id/login_iconImage"
         android:layout_marginTop="20dp"
@@ -52,8 +53,8 @@
             android:hint="@string/password_warn"
             android:textSize="16sp"
             android:id="@+id/login_passwordTxt"
-            android:password="true"
             android:layout_width="200dp"
+            android:inputType="textPassword"
             android:layout_height="wrap_content" />
     </LinearLayout>
     <Button

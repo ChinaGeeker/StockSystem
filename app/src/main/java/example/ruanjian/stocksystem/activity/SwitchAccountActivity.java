@@ -2,7 +2,6 @@ package example.ruanjian.stocksystem.activity;
 
 import android.view.View;
 import android.os.Bundle;
-import android.app.Activity;
 import android.widget.ListView;
 import android.widget.AdapterView;
 
@@ -10,10 +9,9 @@ import android.widget.AdapterView;
 import example.ruanjian.stocksystem.R;
 import example.ruanjian.stocksystem.info.AccountInfo;
 import example.ruanjian.stocksystem.utils.AccountUtils;
-import example.ruanjian.stocksystem.manager.ActivityAppManager;
 import example.ruanjian.stocksystem.adapter.ChangeAccountAdapter;
 
-public class SwitchAccountActivity extends Activity implements AdapterView.OnItemClickListener {
+public class SwitchAccountActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
     private ListView _accountListView;
     private ChangeAccountAdapter _changeAccountAdapter;
@@ -21,7 +19,6 @@ public class SwitchAccountActivity extends Activity implements AdapterView.OnIte
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        ActivityAppManager.getInstance().addActivity(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.change_account_activity);
         initView();
@@ -47,7 +44,6 @@ public class SwitchAccountActivity extends Activity implements AdapterView.OnIte
     @Override
     public void onDestroy()
     {
-        ActivityAppManager.getInstance().removeActivity(this);
         super.onDestroy();
     }
 

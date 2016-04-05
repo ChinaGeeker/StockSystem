@@ -1,7 +1,5 @@
 package example.ruanjian.stocksystem.databases.sqlUtils;
 
-import android.util.Log;
-
 import example.ruanjian.stocksystem.utils.StockSystemConstant;
 
 
@@ -15,12 +13,10 @@ public class StockSQLUtils extends BaseSQLUtils
     {
         if (_instance == null)
         {
-            Log.v("getInstance 数据库 ", "   ");
             _instance = new StockSQLUtils();
         }
         return _instance;
     }
-
 
     public StockSQLUtils()
     {

@@ -3,6 +3,7 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ImageView
+        android:contentDescription="@string/empty"
         android:scaleType="fitXY"
         android:src="@drawable/icon"
         android:id="@+id/changeAccount_item_image"
@@ -11,7 +12,6 @@
     <TextView
         android:gravity="center_vertical"
         android:textSize="20sp"
-        android:text="45646465"
         android:layout_marginLeft="20dp"
         android:id="@+id/changeAccount_item_accountNameTxt"
         android:layout_width="fill_parent"

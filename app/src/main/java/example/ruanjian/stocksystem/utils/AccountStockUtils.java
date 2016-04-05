@@ -54,15 +54,42 @@ public class AccountStockUtils
         return false;
     }
 
+    public static int deleteByAccountName(String accountName)
+    {
+        String whereClause = StockSystemConstant.ACCOUNT_COLUMN_ACCOUNT_NAME + "=?";
+        String[] whereArgs = new String[]{accountName + ""};
+        int resultIndex = accountStockSQLUtils.delete(whereClause, whereArgs);
+        _accountStockHashMap.remove(accountName);
+
+
+        if (resultIndex <= -1)
+        {
+            Log.v("测试", "delete 账号里 股票  删除账号失败");
+        }
+        else
+        {
+            Log.v("测试", "delete账号里 股票  删除账号成功g");
+        }
+        return resultIndex;
+    }
+
+
     public static List<AccountStockInfo> getListByAccountName(String accountName)
     {
         if (_accountStockHashMap == null)
         {
             _accountStockHashMap = new HashMap<String, List<AccountStockInfo>>();
         }
+        List<AccountStockInfo> accountStockInfoList = null;
         if (_accountStockHashMap.containsKey(accountName))
         {
-            return _accountStockHashMap.get(accountName);
+            accountStockInfoList = _accountStockHashMap.get(accountName);
+            AccountStockInfo accountStockInfo = new AccountStockInfo();
+
+            accountStockInfo.set_stockName("12456试试的");
+            accountStockInfo.set_number("sh10025");
+//            accountStockInfoList.add(accountStockInfo);
+            return accountStockInfoList;
         }
         return (new ArrayList<AccountStockInfo>());
     }
@@ -113,6 +140,7 @@ public class AccountStockUtils
         {
             if (accountStockInfo.get_number().equals(stockInfo.get_number()))
             {
+                Log.v("removeStockInfo 失败  ", accountName + " 沙河年初  " + stockInfo.getName());
                 accountStockInfoList.remove(accountStockInfo);
                 break;
             }

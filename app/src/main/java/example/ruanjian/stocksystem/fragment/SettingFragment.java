@@ -2,7 +2,6 @@ package example.ruanjian.stocksystem.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Gravity;
 import android.widget.Toast;
@@ -28,9 +27,9 @@ import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 
 import example.ruanjian.stocksystem.R;
+import example.ruanjian.stocksystem.application.StockSystemApplication;
 import example.ruanjian.stocksystem.utils.AccountUtils;
 import example.ruanjian.stocksystem.activity.LogActivity;
-import example.ruanjian.stocksystem.utils.StockSystemUtils;
 import example.ruanjian.stocksystem.utils.StockSystemConstant;
 import example.ruanjian.stocksystem.service.RealTimeUpdateService;
 import example.ruanjian.stocksystem.activity.SwitchAccountActivity;
@@ -91,7 +90,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         Bitmap bitmap = AccountUtils.getBitmapByIconPath(iconPath, getContext());
         if (bitmap != null)
         {
-            _iconBtn.setImageBitmap(StockSystemUtils.toRoundBitmap(bitmap));
+            _iconBtn.setImageBitmap(StockSystemApplication.getInstance().toRoundBitmap(bitmap));
         }
     }
 
@@ -114,7 +113,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 startActivity(intent);
                 break;
             case R.id.forbidUpdateBtn:
-                StockSystemUtils.stateRealTimeUpdate = StockSystemConstant.STATE_CANCELED;
+                StockSystemApplication.getInstance().stateRealTimeUpdate = StockSystemConstant.STATE_CANCELED;
                 intent.setClass(getActivity(), RealTimeUpdateService.class);
                 getActivity().stopService(intent);
                 break;
@@ -124,7 +123,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
 
     private void saveCartureImage(Bitmap bitmap)
     {
-        String path =  "/storage/emulated/0/stock/" + StockSystemUtils.getCurTimeString() + ".jpg";
+        String path =  "/storage/emulated/0/stock/" + StockSystemApplication.getInstance().getCurTimeString() + ".jpg";
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(path, false);
             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
@@ -135,10 +134,10 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
             updateIcon(uri.toString());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            StockSystemUtils.printLog(StockSystemConstant.LOG_ERROR, "", e);
+            StockSystemApplication.getInstance().printLog(StockSystemConstant.LOG_ERROR, "", e);
         }catch (IOException e) {
             e.printStackTrace();
-            StockSystemUtils.printLog(StockSystemConstant.LOG_ERROR, "", e);
+            StockSystemApplication.getInstance().printLog(StockSystemConstant.LOG_ERROR, "", e);
         }
     }
 
@@ -149,13 +148,13 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         {
             return;
         }
-        if (requestCode == StockSystemConstant.REQUEST_CARTURE)
+        if (requestCode == StockSystemConstant.REQUEST_CAPRTURE)
         {
             Bundle bundle = data.getExtras();
             if (bundle != null)
             {
                 Bitmap bitmap = bundle.getParcelable("data");
-                _iconBtn.setImageBitmap(StockSystemUtils.toRoundBitmap(bitmap));
+                _iconBtn.setImageBitmap(StockSystemApplication.getInstance().toRoundBitmap(bitmap));
                 saveCartureImage(bitmap);
             }
         }
@@ -169,12 +168,12 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 try {
                     inputStream = getActivity().getContentResolver().openInputStream(uri);
                     Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                    _iconBtn.setImageBitmap(StockSystemUtils.toRoundBitmap(bitmap));
+                    _iconBtn.setImageBitmap(StockSystemApplication.getInstance().toRoundBitmap(bitmap));
                     updateIcon(uri.toString());
 
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
-                    StockSystemUtils.printLog(StockSystemConstant.LOG_ERROR, "", e);
+                    StockSystemApplication.getInstance().printLog(StockSystemConstant.LOG_ERROR, "", e);
                 }
             }
         }
@@ -215,7 +214,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 public void onClick(View v) {
                     Intent intent = new Intent();
                     intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(intent, StockSystemConstant.REQUEST_CARTURE);
+                    startActivityForResult(intent, StockSystemConstant.REQUEST_CAPRTURE);
                     _picPopupWindow.dismiss();
                 }
             });
@@ -224,7 +223,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         }
         _picPopupWindow.setOutsideTouchable(true);
         _picPopupWindow.setFocusable(false);
-        _picPopupWindow.setBackgroundDrawable(new ColorDrawable(getActivity().getResources().getColor(R.color.colorBuff)));
+        _picPopupWindow.setBackgroundDrawable(new ColorDrawable(StockSystemApplication.getInstance().getColorById(R.color.colorBuff)));
         View mainView = LayoutInflater.from(getActivity()).inflate(R.layout.stock_main_activity, null);
         _picPopupWindow.showAtLocation(mainView, Gravity.BOTTOM|Gravity.CENTER, 0, 0);
     }

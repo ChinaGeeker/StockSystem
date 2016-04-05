@@ -1,9 +1,8 @@
-package example.ruanjian.stocksystem;
+package example.ruanjian.stocksystem.activity;
 
-import android.os.Build;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
-import android.app.Activity;
 import android.widget.Toast;
 import android.widget.Button;
 import android.content.Intent;
@@ -12,25 +11,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ListView;
 import android.widget.ImageView;
-import android.app.ProgressDialog;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.PopupWindow;
 import android.view.LayoutInflater;
 import android.graphics.drawable.BitmapDrawable;
 
+import example.ruanjian.stocksystem.R;
 import example.ruanjian.stocksystem.info.AccountInfo;
+import example.ruanjian.stocksystem.manager.AlertDialogManager;
 import example.ruanjian.stocksystem.utils.AccountUtils;
 import example.ruanjian.stocksystem.adapter.AccountAdapter;
-import example.ruanjian.stocksystem.utils.StockSystemUtils;
-import example.ruanjian.stocksystem.activity.RegisterActivity;
 import example.ruanjian.stocksystem.manager.ActivityAppManager;
-import example.ruanjian.stocksystem.activity.StockMainActivity;
-import example.ruanjian.stocksystem.databases.StockSystemSQLHelper;
 import example.ruanjian.stocksystem.asyncTask.LoginAccountAsyncTask;
-import example.ruanjian.stocksystem.asyncTask.GetAllAccountAsyncTask;
 
-public class LoginActivity extends Activity implements View.OnClickListener
+public class LoginActivity extends BaseActivity implements View.OnClickListener
 {
     /*1、第一次需要输入账户、密码登陆（可以本地注册），第二次默认登陆，具有切换账号的功能
     2、记录当前用户的股票游览记录，实时更新当前的股票行情，需要显示股票代号、名称、价格、涨幅度
@@ -49,28 +44,17 @@ public class LoginActivity extends Activity implements View.OnClickListener
     private EditText _accountNameTxt;
     private TextView _loginRegisterTxt;
     private AccountAdapter _accountAdapter;
-    private ProgressDialog _progressDialog;
     private PopupWindow _accountPopupWindow;
+
+    private AlertDialog _alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        StockSystemUtils.context = this;
-        ActivityAppManager.getInstance().addActivity(this);
-        StockSystemUtils.initUtils(StockSystemSQLHelper.getInstance(this));
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
         initView();
-        int accountLen = AccountUtils.getAllAccountInfo().size();
-        if (accountLen <= 0)
-        {
-            showProgressDialog();
-        }
-        else
-        {
-            refreshLogin();
-        }
+        refreshLogin();
     }
 
     private void initView()
@@ -103,21 +87,11 @@ public class LoginActivity extends Activity implements View.OnClickListener
         Bitmap bitmap = AccountUtils.getBitmapByIconPath(accountInfo.get_userIconPath(), this);
         if (bitmap != null)
         {
-            _iconImage.setImageBitmap(StockSystemUtils.toRoundBitmap(bitmap));
+            _iconImage.setImageBitmap(stockSystemApplication.toRoundBitmap(bitmap));
         }
         else
         {
-            BitmapDrawable bitmapDrawable = null;
-            int sdkVerion = Build.VERSION.SDK_INT;
-            if (sdkVerion >= 21)
-            {
-                bitmapDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.icon, null);
-            }
-            else
-            {
-                bitmapDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.icon);
-            }
-            _iconImage.setImageBitmap(StockSystemUtils.toRoundBitmap(bitmapDrawable.getBitmap()));
+            _iconImage.setImageResource(R.drawable.icon);
         }
     }
 
@@ -151,14 +125,7 @@ public class LoginActivity extends Activity implements View.OnClickListener
 
     public void refreshLogin()
     {
-        if (_progressDialog != null)
-        {
-            _progressDialog.dismiss();
-        }
-        if (_accountPopupWindow != null)
-        {
-            _accountPopupWindow.dismiss();
-        }
+        closeDialog();
         if (AccountUtils.getCurLoginAccountInfo() == null)
         {
             updateData(AccountUtils.curSelectAccountInfo);
@@ -185,36 +152,28 @@ public class LoginActivity extends Activity implements View.OnClickListener
 
     @Override
     protected void onDestroy() {
-        if (_progressDialog != null)
-        {
-            _progressDialog.dismiss();
-        }
-        StockSystemSQLHelper.getInstance(this).close();
-        ActivityAppManager.getInstance().removeActivity(this);
+        closeDialog();
+        ActivityAppManager.getInstance().exit();
         super.onDestroy();
     }
 
-    private void showProgressDialog()
+    private void closeDialog()
     {
-        if (_progressDialog == null)
+        AlertDialogManager.closeAlertDialog(_alertDialog);
+        if (_accountPopupWindow != null)
         {
-            _progressDialog = new ProgressDialog(this);
+            _accountPopupWindow.dismiss();
         }
-        _progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        _progressDialog.setIndeterminate(true);
-        _progressDialog.setMessage(getResources().getString(R.string.app_name));
-        _progressDialog.setTitle(R.string.login_info);
-        _progressDialog.setCancelable(true);
-        _progressDialog.show();
-        new GetAllAccountAsyncTask(this).execute();
     }
 
     @Override
     protected void onResume()
     {
-        StockSystemUtils.cancelAllNotifition();
+        stockSystemApplication.cancelAllNotifition();
         super.onResume();
     }
+
+
 
 
     @Override
@@ -249,9 +208,17 @@ public class LoginActivity extends Activity implements View.OnClickListener
                 }
                 String accountNameStr = _accountNameTxt.getText().toString();
                 String passwordStr = _passwordTxt.getText().toString();
-                new LoginAccountAsyncTask(this).execute(accountNameStr, passwordStr);
+                showAlertDialog(getString(R.string.logining));
+                new LoginAccountAsyncTask(this, _alertDialog).execute(accountNameStr, passwordStr);
                 break;
         }
+    }
+
+    private void showAlertDialog(String message)
+    {
+        AlertDialogManager.closeAlertDialog(_alertDialog);
+        _alertDialog = AlertDialogManager.getAlertDialog(this, message);
+        _alertDialog.show();
     }
 
 

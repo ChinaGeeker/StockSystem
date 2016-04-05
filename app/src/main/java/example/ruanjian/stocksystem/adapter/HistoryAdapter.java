@@ -65,11 +65,28 @@ public class HistoryAdapter extends BaseAdapter
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        View view = LayoutInflater.from(_context).inflate(R.layout.histoty_item, null);
-        TextView textView = (TextView) view.findViewById(R.id.history_item_Txt);
+        ViewHolder viewHolder;
+        View view;
+        if (convertView == null)
+        {
+            viewHolder = new ViewHolder();
+            view = LayoutInflater.from(_context).inflate(R.layout.histoty_item, null);
+            viewHolder.textView = (TextView) view.findViewById(R.id.history_item_Txt);
+            view.setTag(viewHolder);
+        }
+        else
+        {
+            view = convertView;
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
         HistoryRecordInfo historyRecordInfo = (HistoryRecordInfo) getItem(position);
-        textView.setText(historyRecordInfo.get_recordDetail());
+        viewHolder.textView.setText(historyRecordInfo.get_recordDetail());
         return view;
+    }
+
+    class ViewHolder
+    {
+        protected TextView textView;
     }
 
 

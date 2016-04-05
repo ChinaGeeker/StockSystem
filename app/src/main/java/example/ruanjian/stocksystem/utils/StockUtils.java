@@ -114,8 +114,13 @@ public class StockUtils
 
     public static void addStockInfo(StockInfo stockInfo)
     {
-        if (stockInfo == null || isExistStock(stockInfo.get_number()) == true)
+        if (stockInfo == null)
         {
+            return;
+        }
+        if (isExistStock(stockInfo.get_number()) == true)
+        {
+            updateStockData(stockInfo);
             return;
         }
         ContentValues contentValues = getContentValueByStockInfo(stockInfo);

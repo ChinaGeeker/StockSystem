@@ -8,21 +8,15 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
-    <uses-permission android:name="android.permission.GET_TASKS"/>
-
 
     <application
+        android:name=".application.StockSystemApplication"
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
-        <activity android:name=".LoginActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity android:name=".activity.LoginActivity" >
         </activity>
         <activity android:name=".activity.StockMainActivity" >
         </activity>
@@ -34,10 +28,18 @@
         </activity>
         <activity android:name=".activity.LogActivity" >
         </activity>
-
-        <service
-            android:name=".service.RealTimeUpdateService">
+        <activity android:name=".activity.BaseActivity" >
+        </activity>
+        <service android:name=".service.RealTimeUpdateService" >
         </service>
+
+        <activity android:name=".SplashActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

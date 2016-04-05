@@ -3,7 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
-        android:background="@color/colorChocolate"
+        android:background="@color/common_top_bar_blue"
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
@@ -11,12 +11,13 @@
             android:textColor="@color/colorWhite"
             android:textSize="18sp"
             android:id="@+id/stock_accountNameTxt"
-            android:text="主界面"
+            android:text="@string/app_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Button
+            android:textColor="@color/colorBuff"
             android:layout_marginLeft="30dp"
-            android:text="退出登录"
+            android:text="@string/exit"
             android:id="@+id/stock_exitBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -35,16 +36,19 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
             <ImageView
+                android:contentDescription="@string/empty"
                 android:layout_weight="1"
                 android:src="@drawable/call_normal"
                 android:layout_width="70dp"
                 android:layout_height="70dp" />
             <ImageView
+                android:contentDescription="@string/empty"
                 android:layout_weight="1"
                 android:src="@drawable/message_normal"
                 android:layout_width="70dp"
                 android:layout_height="70dp" />
             <ImageView
+                android:contentDescription="@string/empty"
                 android:layout_weight="1"
                 android:src="@drawable/contact_normal"
                 android:layout_width="70dp"
@@ -55,6 +59,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
             <ImageView
+                android:contentDescription="@string/empty"
                 android:clickable="false"
                 android:alpha="0"
                 android:id="@+id/stock_listBtn"
@@ -63,6 +68,7 @@
                 android:layout_width="70dp"
                 android:layout_height="70dp" />
             <ImageView
+                android:contentDescription="@string/empty"
                 android:clickable="false"
                 android:alpha="0"
                 android:layout_weight="1"
@@ -71,6 +77,7 @@
                 android:layout_width="70dp"
                 android:layout_height="70dp" />
             <ImageView
+                android:contentDescription="@string/empty"
                 android:clickable="false"
                 android:alpha="0"
                 android:layout_weight="1"

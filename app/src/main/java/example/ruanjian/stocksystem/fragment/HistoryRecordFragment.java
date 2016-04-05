@@ -25,12 +25,6 @@ public class HistoryRecordFragment extends BaseFragment implements View.OnClickL
 
     private HistoryAdapter _historyAdapter;
 
-    public void setUserVisibleHint(boolean isVisibleToUser)
-    {
-        super.setUserVisibleHint(isVisibleToUser);
-    }
-
-
     @Override
     public void loading()
     {
@@ -112,7 +106,6 @@ public class HistoryRecordFragment extends BaseFragment implements View.OnClickL
     {
         super.onDestroy();
     }
-
 
 
 }

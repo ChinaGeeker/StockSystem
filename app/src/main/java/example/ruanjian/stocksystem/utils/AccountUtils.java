@@ -32,7 +32,17 @@ public class AccountUtils
         String selection = StockSystemConstant.ACCOUNT_COLUMN_ACCOUNT_NAME + "=? ";
         String[] selectionArgs = new String[]{accountName};
         removeAccountInfo(accountName);
-        return accountSQLUtils.delete(selection, selectionArgs);
+        int resultIndex = accountSQLUtils.delete(selection, selectionArgs);
+
+        if (resultIndex <= -1)
+        {
+            Log.v("测试", "delete   删除账号 账号失败");
+        }
+        else
+        {
+            Log.v("测试", "delete删除账号   删除账号成功g");
+        }
+        return resultIndex;
     }
 
     public static void cleanCurAccount()
@@ -78,11 +88,11 @@ public class AccountUtils
         {
             _accountInfoList = new ArrayList<AccountInfo>();
         }
-        AccountInfo accountInfo = null;
-        Iterator<AccountInfo> accontIterator = _accountInfoList.iterator();
-        while (accontIterator.hasNext())
+        AccountInfo accountInfo;
+        Iterator<AccountInfo> accountIterator = _accountInfoList.iterator();
+        while (accountIterator.hasNext())
         {
-            accountInfo = accontIterator.next();
+            accountInfo = accountIterator.next();
             if (accountInfo.get_accountName().equals(addAccountInfo.get_accountName()))
             {
                 return ;
@@ -104,11 +114,11 @@ public class AccountUtils
         {
             return null;
         }
-        AccountInfo accountInfo = null;
-        Iterator<AccountInfo> accontIterator = _accountInfoList.iterator();
-        while (accontIterator.hasNext())
+        AccountInfo accountInfo;
+        Iterator<AccountInfo> accountIterator = _accountInfoList.iterator();
+        while (accountIterator.hasNext())
         {
-            accountInfo = accontIterator.next();
+            accountInfo = accountIterator.next();
             if (accountInfo.get_accountName().equals(accountName))
             {
                 return accountInfo;
@@ -160,7 +170,7 @@ public class AccountUtils
         String selection = StockSystemConstant.ACCOUNT_COLUMN_ACCOUNT_NAME + "=?";
         ContentValues contentValues = new ContentValues();
         contentValues.put(StockSystemConstant.ACCOUNT_COLUMN_LOGIN_STATE_NAME, StockSystemConstant.STATE_CANCELED);
-        int resultIndex = accountSQLUtils.update(contentValues, selection, new String[]{accountName});
+        int resultIndex = accountSQLUtils.update(contentValues, selection, selectionArgs);
         /*if (resultIndex <= -1)
         {
             Log.v("测试  退出账号  ", "更新" + accountName + "账号登录状态失败");
@@ -215,7 +225,7 @@ public class AccountUtils
                 curSelectAccountInfo = null;
             }
         }
-        AccountInfo accountInfo = null;
+        AccountInfo accountInfo;
         Iterator<AccountInfo> accontIterator = _accountInfoList.iterator();
         while (accontIterator.hasNext())
         {
@@ -232,10 +242,10 @@ public class AccountUtils
     public static Bitmap getBitmapByIconPath(String iconPath, Context context)
     {
         Bitmap bitmap = null;
-        if (iconPath != StockSystemConstant.DEFAULT)
+        if (iconPath.equals(StockSystemConstant.DEFAULT) == false)
         {
             Uri uri = Uri.parse(iconPath);
-            InputStream inputStream = null;
+            InputStream inputStream;
             try {
                 inputStream = context.getContentResolver().openInputStream(uri);
                 bitmap = BitmapFactory.decodeStream(inputStream);
@@ -253,15 +263,11 @@ public class AccountUtils
         String selection = StockSystemConstant.ACCOUNT_COLUMN_ACCOUNT_NAME + "=?";
         ContentValues contentValues = new ContentValues();
         contentValues.put(StockSystemConstant.ACCOUNT_COLUMN_ICON_PATH_NAME, iconPath);
-        int resultIndex = accountSQLUtils.update(contentValues, selection, new String[]{accountName});
-        if (resultIndex <= -1)
-        {
-//            Log.v(iconPath + "   测试    ", "更新  头像   " + accountName + "  失败");
-        }
-        else
+        int resultIndex = accountSQLUtils.update(contentValues, selection, selectionArgs);
+        if (resultIndex >= 0)
         {
             _curLoginAccountInfo.set_userIconPath(iconPath);
-            AccountInfo accountInfo = null;
+            AccountInfo accountInfo;
             Iterator<AccountInfo> accontIterator = _accountInfoList.iterator();
             while (accontIterator.hasNext())
             {

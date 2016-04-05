@@ -11,8 +11,8 @@ import android.view.LayoutInflater;
 import example.ruanjian.stocksystem.R;
 import example.ruanjian.stocksystem.info.AccountInfo;
 import example.ruanjian.stocksystem.utils.AccountUtils;
-import example.ruanjian.stocksystem.utils.StockSystemUtils;
 import example.ruanjian.stocksystem.activity.SwitchAccountActivity;
+import example.ruanjian.stocksystem.application.StockSystemApplication;
 
 public class ChangeAccountAdapter extends BaseAdapter
 {
@@ -44,19 +44,42 @@ public class ChangeAccountAdapter extends BaseAdapter
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        View view = LayoutInflater.from(_changeAccountActivity).inflate(R.layout.change_account_item, null);
-        ImageView iconImage = (ImageView) view.findViewById(R.id.changeAccount_item_image);
-        TextView accountNameTxt = (TextView) view.findViewById(R.id.changeAccount_item_accountNameTxt);
+
+        ViewHolder viewHolder;
+        View view;
+        if (convertView == null)
+        {
+            view = LayoutInflater.from(_changeAccountActivity).inflate(R.layout.change_account_item, null);
+            viewHolder = new ViewHolder();
+            viewHolder.iconImage = (ImageView) view.findViewById(R.id.changeAccount_item_image);
+            viewHolder.accountNameTxt = (TextView) view.findViewById(R.id.changeAccount_item_accountNameTxt);
+            view.setTag(viewHolder);
+        }
+        else
+        {
+            view = convertView;
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
         AccountInfo accountInfo = (AccountInfo) getItem(position);
-        accountNameTxt.setText(accountInfo.get_accountName());
+        viewHolder.accountNameTxt.setText(accountInfo.get_accountName());
         Bitmap bitmap = AccountUtils.getBitmapByIconPath(accountInfo.get_userIconPath(), _changeAccountActivity);
         if (bitmap != null)
         {
-             iconImage.setImageBitmap(StockSystemUtils.toRoundBitmap(bitmap));
+            viewHolder.iconImage.setImageBitmap(StockSystemApplication.getInstance().toRoundBitmap(bitmap));
+        }
+        else
+        {
+            viewHolder.iconImage.setImageResource(R.drawable.icon);
         }
         return view;
     }
 
+
+    class ViewHolder
+    {
+        protected ImageView iconImage;
+        protected TextView accountNameTxt;
+    }
 
 
 }

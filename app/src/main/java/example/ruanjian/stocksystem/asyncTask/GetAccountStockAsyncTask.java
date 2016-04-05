@@ -1,20 +1,19 @@
 package example.ruanjian.stocksystem.asyncTask;
 
+import android.os.Bundle;
 import android.os.AsyncTask;
 
 import example.ruanjian.stocksystem.utils.StockUtils;
 import example.ruanjian.stocksystem.utils.AccountStockUtils;
+import example.ruanjian.stocksystem.manager.BroadcastManager;
 import example.ruanjian.stocksystem.utils.StockSystemConstant;
-import example.ruanjian.stocksystem.activity.StockMainActivity;
 
 
 public class GetAccountStockAsyncTask extends AsyncTask<Void, Void, Void>{
 
-    private StockMainActivity _stockMainActivity;
 
-    public GetAccountStockAsyncTask(StockMainActivity stockMainActivity)
+    public GetAccountStockAsyncTask()
     {
-        this._stockMainActivity = stockMainActivity;
     }
 
     @Override
@@ -31,7 +30,9 @@ public class GetAccountStockAsyncTask extends AsyncTask<Void, Void, Void>{
     @Override
     protected void onPostExecute(Void result)
     {
-        _stockMainActivity.handler(StockSystemConstant.TYPE_LIST, null);
+        Bundle bundle = new Bundle();
+        bundle.putInt(StockSystemConstant.STOCK_MAIN_TYPE, StockSystemConstant.TYPE_LIST);
+        BroadcastManager.getInstance().sendBroadcast(StockSystemConstant.STOCK_MAIN_ACTION, bundle);
     }
 
 

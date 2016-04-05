@@ -6,9 +6,13 @@
     <TextView
         android:textColor="@color/colorLemonChiffon"
         android:gravity="center_horizontal"
-        android:text="股票名称"
         android:textSize="23sp"
         android:id="@+id/stockItemTxt"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
+    <ImageView
+        android:contentDescription="@string/empty"
+        android:background="@color/divider_list"
+        android:layout_height="1px"
+        android:layout_width="fill_parent" />
 </LinearLayout>

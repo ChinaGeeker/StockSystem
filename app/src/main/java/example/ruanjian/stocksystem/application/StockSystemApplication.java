@@ -1,22 +1,23 @@
-package example.ruanjian.stocksystem.utils;
+package example.ruanjian.stocksystem.application;
 
-
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+import android.graphics.Paint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
+import android.content.Context;
+import android.app.Application;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.graphics.PorterDuff;
+import android.app.NotificationManager;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
 
 import java.io.File;
@@ -28,28 +29,40 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import example.ruanjian.stocksystem.LoginActivity;
 import example.ruanjian.stocksystem.R;
-import example.ruanjian.stocksystem.databases.sqlUtils.AccountSQLUtils;
-import example.ruanjian.stocksystem.databases.sqlUtils.AccountStockSQLUtils;
-import example.ruanjian.stocksystem.databases.sqlUtils.HistoryBrowsingSQLUtils;
-import example.ruanjian.stocksystem.databases.sqlUtils.StockSQLUtils;
-import example.ruanjian.stocksystem.databases.StockSystemSQLHelper;
-import example.ruanjian.stocksystem.info.StockInfo;
 import example.ruanjian.stocksystem.log.Logger;
+import example.ruanjian.stocksystem.info.StockInfo;
+import example.ruanjian.stocksystem.utils.StockUtils;
+import example.ruanjian.stocksystem.activity.LoginActivity;
 import example.ruanjian.stocksystem.manager.ActivityAppManager;
+import example.ruanjian.stocksystem.utils.StockSystemConstant;
+import example.ruanjian.stocksystem.databases.StockSystemSQLHelper;
 
-public class StockSystemUtils
+public class StockSystemApplication extends Application
 {
-    public static Context context;
-    private static int _notificationId = 0;
-    public static int stateRealTimeUpdate = -1;
-    private static List<Integer> _notificationIdArr;
-    public static String stockInfoActivitySimpleName = "";
+    private  int _notificationId = 0;
+    public int stateRealTimeUpdate = -1;
+    private List<Integer> _notificationIdArr;
 
-    private static StockSystemSQLHelper _stockSystemSQLHelper;
+    private static StockSystemApplication _instance;
 
-    public static void printLog(int logType, Object message, Throwable t)
+    private StockSystemSQLHelper _stockSystemSQLHelper;
+
+    public static StockSystemApplication getInstance()
+    {
+        return _instance;
+    }
+
+
+    @Override
+    public void onCreate()
+    {
+        super.onCreate();
+        _instance = this;
+        initUtils();
+    }
+
+    public void printLog(int logType, Object message, Throwable t)
     {
         Logger logger = Logger.getLoggerInstance();
         switch (logType)
@@ -69,43 +82,50 @@ public class StockSystemUtils
         }
     }
 
-    public static void sendNotifition(StockInfo stockInfo)
+    public void sendNotifition(StockInfo stockInfo)
     {
         if (_notificationIdArr == null)
         {
             _notificationIdArr = new ArrayList<Integer>();
         }
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         Intent intent = new Intent();
-        intent.setClass(context, LoginActivity.class);
+        intent.setClass(getApplicationContext(), LoginActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable(StockSystemConstant.STOCK_INFO, stockInfo);
         intent.putExtras(bundle);
 
-        PendingIntent pendingIntent =  PendingIntent.getActivity(context, (int)System.currentTimeMillis(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        Notification.Builder builder = new Notification.Builder(context);
+        PendingIntent pendingIntent =  PendingIntent.getActivity(getApplicationContext(), (int)System.currentTimeMillis(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        Notification.Builder builder = new Notification.Builder(getApplicationContext());
 
-        builder.setTicker(context.getString(R.string.stockChange));
+        builder.setTicker(getString(R.string.stockChange));
         builder.setSmallIcon(R.drawable.notifitionicon);
         builder.setContentTitle(stockInfo.getName());
-        builder.setContentText(stockInfo.getName() + context.getString(R.string.stockUp));
+        builder.setContentText(stockInfo.getName() + getString(R.string.stockUp));
         builder.setWhen(System.currentTimeMillis());
         builder.setAutoCancel(true);
         builder.setDefaults(Notification.DEFAULT_ALL);
         builder.setContentIntent(pendingIntent);
-        Notification notification = builder.build();
+        Notification notification;
+        if (getSDKVersion() >= 16)
+        {
+            notification = builder.build();
+        }
+        else{
+            notification = builder.getNotification();
+        }
         _notificationIdArr.add(_notificationId);
         notificationManager.notify(_notificationId, notification);
         _notificationId++;
     }
 
-    public static void cancelNotifition(int notificationId)
+    public void cancelNotification(int notificationId)
     {
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(notificationId);
     }
 
-    public static void checkSendNotifitionCondition(float gap, StockInfo stockInfo)
+    public void checkSendNotifitionCondition(float gap, StockInfo stockInfo)
     {
         // 股票差距 0.5 , app退出 就弹通知
         if (gap >= StockSystemConstant.STOCK_GAP && (ActivityAppManager.getInstance().isEmpty() == true))
@@ -117,7 +137,7 @@ public class StockSystemUtils
         }
     }
 
-    public static void cancelAllNotifition()
+    public void cancelAllNotifition()
     {
         if (_notificationIdArr == null)
         {
@@ -125,21 +145,21 @@ public class StockSystemUtils
         }
         for (Integer notificationId:_notificationIdArr)
         {
-            cancelNotifition(notificationId);
+            cancelNotification(notificationId);
         }
         _notificationIdArr.clear();
         _notificationId = 0;
     }
 
-    public static void cleanLog()
+    public void cleanLog()
     {
         String content = "";
         try {
-            FileOutputStream fileOutputStream = context.openFileOutput(StockSystemConstant.LOG_FILE_NAME, Context.MODE_PRIVATE);
+            FileOutputStream fileOutputStream = getApplicationContext().openFileOutput(StockSystemConstant.LOG_FILE_NAME, Context.MODE_PRIVATE);
             fileOutputStream.write(content.getBytes());
             fileOutputStream.flush();
             fileOutputStream.close();
-            Toast.makeText(context, R.string.successCleanLog, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(_context, R.string.successCleanLog, Toast.LENGTH_SHORT).show();
 //            context.deleteFile(LOG_FILE_NAME); //删除日志文件
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -151,9 +171,9 @@ public class StockSystemUtils
         }
     }
 
-    public static boolean isConnectedNetWork(Context context)
+    public boolean isConnectedNetWork(Context context)
     {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo == null)
         {
@@ -174,36 +194,31 @@ public class StockSystemUtils
         return true;
     }
 
-    public static String getCurTimeStringOne()
+    public String getCurTimeStringOne()
     {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
         Date curDate = new Date(System.currentTimeMillis());
-        String time = formatter.format(curDate);
-        return time;
+        return formatter.format(curDate);
     }
 
-    public static String getCurTimeString()
+    public String getCurTimeString()
     {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         Date curDate = new Date(System.currentTimeMillis());
-        String time = formatter.format(curDate);
-        return time;
+        return formatter.format(curDate);
     }
 
-    public static void initUtils(StockSystemSQLHelper stockSystemSQLHelper)
+    private void initUtils()
     {
         Logger.getLoggerInstance();
-        _stockSystemSQLHelper = stockSystemSQLHelper;
-        StockUtils.stockSQLUtils = StockSQLUtils.getInstance();
-        AccountUtils.accountSQLUtils = AccountSQLUtils.getInstance();
-        AccountStockUtils.accountStockSQLUtils = AccountStockSQLUtils.getInstance();
-        HistoryBrowsingUtils.historyBrowsingSQLUtils = HistoryBrowsingSQLUtils.getInstance();
+        _stockSystemSQLHelper =  StockSystemSQLHelper.getInstance(getApplicationContext());
     }
 
-    public static StockSystemSQLHelper getStockSystemSQLHelper()
+    public StockSystemSQLHelper getStockSystemSQLHelper()
     {
         return _stockSystemSQLHelper;
     }
+
 
 /*  public static boolean activityIsTop()
     {
@@ -213,9 +228,9 @@ public class StockSystemUtils
         return processName.equals(STOCK_INFO_ACTIVITY_PROCESS_NAME);
     }*/
 
-    public static int getActiveNetworkInfoType()
+    public int getActiveNetworkInfoType()
     {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo == null || networkInfo.isAvailable() == false)
         {
@@ -225,9 +240,9 @@ public class StockSystemUtils
         return networkInfo.getType();
     }
 
-    public static String getLogPath()
+    public String getLogPath()
     {
-        return context.getFilesDir().getAbsolutePath() + File.separator + StockSystemConstant.LOG_FILE_NAME;
+        return getApplicationContext().getFilesDir().getAbsolutePath() + File.separator + StockSystemConstant.LOG_FILE_NAME;
 //        return Environment.getExternalStorageDirectory().getAbsolutePath()
 //                + File.separator + "stockSystem" + File.separator + "stockSystem.log";
     }
@@ -236,11 +251,11 @@ public class StockSystemUtils
     /**
      * 把bitmap转成圆形
      * */
-    public static Bitmap toRoundBitmap(Bitmap bitmap)
+    public Bitmap toRoundBitmap(Bitmap bitmap)
     {
         int width=bitmap.getWidth();
         int height=bitmap.getHeight();
-        int r=0;
+        int r;
         //取最短边做边长
         if(width<height){
             r=width;
@@ -265,5 +280,32 @@ public class StockSystemUtils
         return backgroundBm;
     }
 
+    public int getSDKVersion()
+    {
+        return Build.VERSION.SDK_INT;
+    }
 
+    public int getColorById(int id)
+    {
+        if (getSDKVersion() >= 23)
+        {
+            return getResources().getColor(id, null);
+        }
+        return getResources().getColor(id);
+    }
+
+    public void destroy()
+    {
+        _stockSystemSQLHelper.close();
+    }
+
+
+    @Override
+    public void onTrimMemory(int level) {
+
+        Log.v("onTrimMemory 00  ", _notificationId + " getNotificationIdArr  getNotificationIdArr");
+        super.onTrimMemory(level);
+        Log.v("onTrimMemory 11 ", _notificationId + " getNotificationIdArr  getNotificationIdArr");
+
+    }
 }

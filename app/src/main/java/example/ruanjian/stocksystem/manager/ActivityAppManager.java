@@ -4,6 +4,8 @@ import android.app.Activity;
 
 import java.util.Stack;
 
+import example.ruanjian.stocksystem.application.StockSystemApplication;
+
 public class ActivityAppManager
 {
 
@@ -32,9 +34,10 @@ public class ActivityAppManager
             }
         }
         _activityStack.clear();
+        StockSystemApplication.getInstance().destroy();
     }
 
-    public Activity getActivityBySimpeName(String simpleName)
+    public Activity getActivityBySimpeleName(String simpleName)
     {
         for (Activity activity: _activityStack)
         {
@@ -68,9 +71,6 @@ public class ActivityAppManager
             _activityStack.add(activity);
         }
     }
-
-
-
 
 
 

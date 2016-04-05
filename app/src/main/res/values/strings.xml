@@ -6,6 +6,7 @@
     <string name="account_number_warn">请输入账号</string>
     <string name="account_number">账 号</string>
     <string name="password_name">密 码</string>
+    <string name="logining">登录中。。。</string>
     <string name="login_info">正在查询登录信息，请稍后。。。</string>
     <string name="pic_store">图 库</string>
     <string name="capture_photo">拍 照</string>
@@ -26,6 +27,7 @@
     <string name="passwordNotEmpty">密码不能为空</string>
     <string name="accountNotEmpty">账号不能为空</string>
     <string name="exitSuccess">退出成功</string>
+    <string name="exiting">退出中。。。</string>
     <string name="accountExit">账号$退出登录</string>
     <string name="accountLogin">账号:$登录成功</string>
     <string name="accountBug">当前登录账号为空,有bug请检查</string>
@@ -37,10 +39,21 @@
     <string name="stockChange">股票变动</string>
     <string name="stockUp">股票上涨了</string>
     <string name="successCleanLog">成功清除日志</string>
-
+    <string name="exit">退 出</string>
     <string name="netWrongFailed">连接网络失败，请检查网络设置</string>
 
     <string name="curNetType">当前连接网络类型:</string>
+    <string name="deleteAccount">删除账号中。。。</string>
+    <string name="delete">删 除</string>
+    <string name="logActivity">日志页面</string>
+    <string name="stockCurPrice">当前价格:</string>
+    <string name="stockCode">股票编号:</string>
+    <string name="stockClosingPrice">昨日收盘:</string>
+    <string name="stockOpenPrice">今日开盘:</string>
+    <string name="stockMaxPrice">今最高价:</string>
+    <string name="stockMinPrice">今最低价:</string>
+    <string name="noStockInfo">没有任何股票信息</string>
 
-
+    <string name="plus">添 加</string>
+    <string name="empty">""</string>
 </resources>

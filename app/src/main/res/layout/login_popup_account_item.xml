@@ -4,7 +4,6 @@
     android:background="@color/colorPrimary" android:descendantFocusability="blocksDescendants"
     android:layout_height="match_parent">
     <TextView
-        android:text="jfdlksjaljjlj"
         android:gravity="center_vertical"
         android:textColor="@color/colorRed"
         android:textSize="20sp"
