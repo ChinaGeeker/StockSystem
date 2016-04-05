@@ -3,7 +3,7 @@ package example.ruanjian.stocksystem.log;
 import org.apache.log4j.Level;
 
 import de.mindpipe.android.logging.log4j.LogConfigurator;
-import example.ruanjian.stocksystem.utils.StockSystemUtils;
+import example.ruanjian.stocksystem.application.StockSystemApplication;
 import example.ruanjian.stocksystem.utils.StockSystemConstant;
 
 
@@ -25,7 +25,7 @@ public class Logger {
     private Logger()
     {
         LogConfigurator logConfigurator = new LogConfigurator();
-        logConfigurator.setFileName(StockSystemUtils.getLogPath());
+        logConfigurator.setFileName(StockSystemApplication.getInstance().getLogPath());
         logConfigurator.setRootLevel(Level.DEBUG);
         logConfigurator.setLevel("org.apache", Level.ERROR);
         logConfigurator.setFilePattern("%d %-5p [%c{2}]-[%L] %m%n");

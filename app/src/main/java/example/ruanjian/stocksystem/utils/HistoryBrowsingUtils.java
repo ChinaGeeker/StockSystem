@@ -2,11 +2,13 @@ package example.ruanjian.stocksystem.utils;
 
 import android.database.Cursor;
 import android.content.ContentValues;
+import android.util.Log;
 
 import java.util.List;
 import java.util.HashMap;
 import java.util.ArrayList;
 
+import example.ruanjian.stocksystem.application.StockSystemApplication;
 import example.ruanjian.stocksystem.info.StockInfo;
 import example.ruanjian.stocksystem.info.HistoryRecordInfo;
 import example.ruanjian.stocksystem.databases.sqlUtils.HistoryBrowsingSQLUtils;
@@ -16,27 +18,27 @@ public class HistoryBrowsingUtils
 
     public static HistoryBrowsingSQLUtils historyBrowsingSQLUtils;
 
-    private static HashMap<String, List<HistoryRecordInfo>> _recordnfoHashMap = null;
+    private static HashMap<String, List<HistoryRecordInfo>> _recordInfoHashMap = null;
 
     public static void clearRecord(String accountName)
     {
-        if (_recordnfoHashMap == null)
+        if (_recordInfoHashMap == null)
         {
             return;
         }
-        if (_recordnfoHashMap.containsKey(accountName) == true)
+        if (_recordInfoHashMap.containsKey(accountName) == true)
         {
-            _recordnfoHashMap.remove(accountName);
-            int result = historyBrowsingSQLUtils.clearRecord(accountName);
+            _recordInfoHashMap.remove(accountName);
+            /*int result =*/ historyBrowsingSQLUtils.clearRecord(accountName);
         }
     }
 
     public static List<HistoryRecordInfo> getRecordByAccountName(String accountName)
     {
         List<HistoryRecordInfo> historyRecordInfos = new ArrayList<HistoryRecordInfo>();
-        if (_recordnfoHashMap != null && _recordnfoHashMap.containsKey(accountName) == true)
+        if (_recordInfoHashMap != null && _recordInfoHashMap.containsKey(accountName) == true)
         {
-            historyRecordInfos = _recordnfoHashMap.get(accountName);
+            historyRecordInfos = _recordInfoHashMap.get(accountName);
         }
         return historyRecordInfos;
     }
@@ -44,7 +46,7 @@ public class HistoryBrowsingUtils
     public static int saveRecord(StockInfo stockInfo, int historyType)
     {
         String accountName = AccountUtils.getCurLoginAccountInfo().get_accountName();
-        String timeStr = StockSystemUtils.getCurTimeStringOne();
+        String timeStr = StockSystemApplication.getInstance().getCurTimeStringOne();
         String recordDetail = "";
         if (StockSystemConstant.HISTORY_VIEW_TYPE == historyType)
         {
@@ -67,7 +69,7 @@ public class HistoryBrowsingUtils
         contentValues.put(StockSystemConstant.STOCK_NUMBER, stockInfo.get_number());
         contentValues.put(StockSystemConstant.STOCK_NAME, stockInfo.getName());
         contentValues.put(StockSystemConstant.HISTORY_BROWSING_TIME, timeStr);
-        int result = historyBrowsingSQLUtils.insert(null, contentValues);
+        return historyBrowsingSQLUtils.insert(null, contentValues);
         /*if (result <= -1)
         {
             Log.v("saveRecord 失败  ", accountName + " 保存记录  " + stockInfo.getName());
@@ -76,6 +78,27 @@ public class HistoryBrowsingUtils
         {
             Log.v("saveRecord 成功  ", accountName + " 保存记录  " + stockInfo.getName());
         }*/
+    }
+
+
+    public static int deleteHistoryRecordByAccountName(String accountName)
+    {
+        clearRecord(accountName);
+        String whereClause = StockSystemConstant.ACCOUNT_NAME + "=?";
+        String[] whereArgs = new String[]{accountName};
+        int result = historyBrowsingSQLUtils.delete(whereClause, whereArgs);
+
+        if (result <= -1)
+        {
+            Log.v("测试", "delete   历史记录  删除账号失败");
+        }
+        else
+        {
+            Log.v("测试", "delete 历史记录  删除账号成功g");
+        }
+
+
+
         return result;
     }
 
@@ -103,15 +126,15 @@ public class HistoryBrowsingUtils
             historyRecordInfo.set_accountName(accountName);
             historyRecordInfoList.add(historyRecordInfo);
         }
-        if (_recordnfoHashMap == null)
+        if (_recordInfoHashMap == null)
         {
-            _recordnfoHashMap = new HashMap<String, List<HistoryRecordInfo>>();
+            _recordInfoHashMap = new HashMap<String, List<HistoryRecordInfo>>();
         }
-        if (_recordnfoHashMap.containsKey(accountName) == true)
+        if (_recordInfoHashMap.containsKey(accountName) == true)
         {
-            _recordnfoHashMap.remove(accountName);
+            _recordInfoHashMap.remove(accountName);
         }
-        _recordnfoHashMap.put(accountName, historyRecordInfoList);
+        _recordInfoHashMap.put(accountName, historyRecordInfoList);
     }
 
 

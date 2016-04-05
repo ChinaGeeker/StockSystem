@@ -2,7 +2,6 @@ package example.ruanjian.stocksystem.activity;
 
 import android.os.Bundle;
 import android.view.View;
-import android.app.Activity;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -14,13 +13,12 @@ import java.io.InputStreamReader;
 import java.io.FileNotFoundException;
 
 import example.ruanjian.stocksystem.R;
-import example.ruanjian.stocksystem.utils.StockSystemUtils;
-import example.ruanjian.stocksystem.manager.ActivityAppManager;
 import example.ruanjian.stocksystem.utils.StockSystemConstant;
 
-public class LogActivity extends Activity implements View.OnClickListener
+public class LogActivity extends BaseActivity implements View.OnClickListener
 {
     private TextView _logTxt;
+    private Button _returnBtn;
     private Button _cleanLogBtn;
 
     @Override
@@ -28,12 +26,14 @@ public class LogActivity extends Activity implements View.OnClickListener
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.log_activity);
+        _returnBtn = (Button) findViewById(R.id.logReturnBtn);
         _cleanLogBtn = (Button) findViewById(R.id.cleanLogBtn);
         _logTxt = (TextView) findViewById(R.id.log_layout_logTxt);
 
+
+        _returnBtn.setOnClickListener(this);
         _cleanLogBtn.setOnClickListener(this);
 
-        ActivityAppManager.getInstance().addActivity(this);
         initView();
     }
 
@@ -43,7 +43,7 @@ public class LogActivity extends Activity implements View.OnClickListener
             FileInputStream fileInputStream = openFileInput(StockSystemConstant.LOG_FILE_NAME);
             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String temp = "";
+            String temp;
             StringBuffer stringBuffer = new StringBuffer();
             while((temp = bufferedReader.readLine()) != null)
             {
@@ -55,18 +55,18 @@ public class LogActivity extends Activity implements View.OnClickListener
                 _logTxt.setText(stringBuffer.toString());
             }
         } catch (FileNotFoundException e) {
-            StockSystemUtils.printLog(StockSystemConstant.LOG_ERROR, "", e);
+            stockSystemApplication.printLog(StockSystemConstant.LOG_ERROR, "", e);
             e.printStackTrace();
         }catch (IOException e) {
-            StockSystemUtils.printLog(StockSystemConstant.LOG_ERROR, "", e);
+            stockSystemApplication.printLog(StockSystemConstant.LOG_ERROR, "", e);
             e.printStackTrace();
         }
     }
 
 
     @Override
-    protected void onDestroy() {
-        ActivityAppManager.getInstance().removeActivity(this);
+    protected void onDestroy()
+    {
         super.onDestroy();
     }
 
@@ -77,8 +77,11 @@ public class LogActivity extends Activity implements View.OnClickListener
         switch (viewId)
         {
             case R.id.cleanLogBtn:
-                StockSystemUtils.cleanLog();
+                stockSystemApplication.cleanLog();
                 _logTxt.setText(R.string.noLog);
+                break;
+            case R.id.logReturnBtn:
+                finish();
                 break;
             default:
                 break;

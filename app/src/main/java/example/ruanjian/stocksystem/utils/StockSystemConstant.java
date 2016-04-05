@@ -18,20 +18,22 @@ public class StockSystemConstant
 
     //失败
     public final static String FAILED = "FAILED";
-    //    public final static String CHRSET_NAME_UTF8 = "utf-8";
-    public final static String CHRSET_NAME_GBK = "gbk";
+    //    public final static String CHARSET_NAME_UTF8 = "utf-8";
+    public final static String CHARSET_NAME_GBK = "gbk";
 
-    public final static long REALTIME_UPDATE_TIME = 1000 * 60 * 5;// 股票更新时间 5分钟
+    public final static long REALTIME_UPDATE_TIME = 1000 * 5;// 股票更新时间 5分钟
+
+//    public final static long REALTIME_UPDATE_TIME = 1000 * 60 * 5;// 股票更新时间 5分钟
     public final static Float STOCK_GAP = 0.5f;// 股票差距 0.5
     public final static int TYPE_LIST = 0;// stock list
     public final static int TYPE_HISTORY = 1;// history
-    public final static int TYPE_SETTING = 2;// ssetting
+    public final static int TYPE_SETTING = 2;// setting
 
-    public final static String STOCK_IMAGE = "STOCK_IMAGE";// 股票动态图
+    public final static String STOCK_GIF_IMAGE = "STOCK_GIF_IMAGE";// 股票动态图
     public final static String DEFAULT = "DEFAULT";
 
     public final static int REQUEST_PIC = 1;// 选择图片
-    public final static int REQUEST_CARTURE = 2;// 拍照
+    public final static int REQUEST_CAPRTURE = 2;// 拍照
 
     public final static int STATE_SUCCESS = 1;// 登录成功
     public final static int STATE_CANCELED = 0;// 未登录
@@ -93,6 +95,17 @@ public class StockSystemConstant
     public static final int MAX_PRICE=4;
     public static final int MIN_PRICE=5;
     public static final String STOCK_DATA_REX = "str_(.+)=\"(.*)\"(.*)";
+
+
+    public final static String[] LETTER_ARRAY = new String[]{"↑",/*"☆",*/"#","A","B","C","D","E","F","G","H","I","J","K",
+            "L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};// ↑ 最上面 ; # 非拼音开头 比如数字 或其他符号 开头
+
+    public static final String STOCK_MAIN_ACTION = "STOCK_MAIN_ACTION";
+    public static final String STOCK_GIF_IMAGE_ACTION = "STOCK_GIF_IMAGE_ACTION";
+
+
+    public static final String STOCK_MAIN_TYPE = "STOCK_MAIN_TYPE";
+
 
 
 }

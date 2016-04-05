@@ -6,43 +6,41 @@ import android.os.Bundle;
 import android.widget.Toast;
 import android.widget.Button;
 import android.view.ViewGroup;
-import android.content.Intent;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.content.Context;
-import android.widget.AdapterView;
 import android.view.LayoutInflater;
 import android.support.annotation.Nullable;
 
 import example.ruanjian.stocksystem.R;
-import example.ruanjian.stocksystem.info.StockInfo;
-import example.ruanjian.stocksystem.utils.StockUtils;
-import example.ruanjian.stocksystem.info.AccountStockInfo;
-import example.ruanjian.stocksystem.utils.StockSystemUtils;
+import example.ruanjian.stocksystem.application.StockSystemApplication;
+import example.ruanjian.stocksystem.widget.LetterSideBar;
+import example.ruanjian.stocksystem.interce.ILetterChange;
 import example.ruanjian.stocksystem.utils.AccountStockUtils;
-import example.ruanjian.stocksystem.adapter.StockListAdapter;
 import example.ruanjian.stocksystem.interce.IFragmentHandler;
 import example.ruanjian.stocksystem.utils.StockSystemConstant;
-import example.ruanjian.stocksystem.utils.HistoryBrowsingUtils;
-import example.ruanjian.stocksystem.activity.StockInfoActivity;
 import example.ruanjian.stocksystem.activity.StockMainActivity;
 import example.ruanjian.stocksystem.asyncTask.AddStockAsyncTask;
+import example.ruanjian.stocksystem.adapter.StockLetterListAdapter;
 import example.ruanjian.stocksystem.asyncTask.GetAccountStockAsyncTask;
 
-public class StockListFragment extends BaseFragment implements View.OnClickListener
+public class StockListFragment extends BaseFragment implements View.OnClickListener, ILetterChange
 {
 
     private View _view;
     private TextView _warnTxt;
     private ListView _listView;
+    private TextView _letterTxt;
+
     private Button _addStockBtn;
 
     private EditText _stockCodeTxt;
-
+    private LetterSideBar _letterSideBar;
     private IFragmentHandler iFragmentHandler;
 
-    private StockListAdapter _stockListAdapter;
+
+    private StockLetterListAdapter _stockLetterListAdapter;
 
     public void setUserVisibleHint(boolean isVisibleToUser)
     {
@@ -54,9 +52,30 @@ public class StockListFragment extends BaseFragment implements View.OnClickListe
     {
         if (isInited == true || isVisible == true)
         {
-            new GetAccountStockAsyncTask((StockMainActivity)getActivity()).execute();
+            new GetAccountStockAsyncTask().execute();
         }
     }
+
+
+    @Override
+    public void sectionChange(int sectionIndex)
+    {
+        int position = _stockLetterListAdapter.getPositionForSection(sectionIndex);
+        if(position >= 0)
+        {
+            _listView.setSelection(position);
+        }
+    }
+
+   /* @Override
+    public void letterChange(String letter)
+    {
+        int position = _stockLetterListAdapter.getPositionByLetter(letter);
+        if(position >= 0)
+        {
+            _listView.setSelection(position);
+        }
+    }*/
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -66,9 +85,9 @@ public class StockListFragment extends BaseFragment implements View.OnClickListe
 
     public void refreshListView()
     {
-        if (_stockListAdapter != null)
+        if (_stockLetterListAdapter != null)
         {
-            _stockListAdapter.refreshList(true);
+            _stockLetterListAdapter.refreshList(true);
         }
     }
 
@@ -81,34 +100,20 @@ public class StockListFragment extends BaseFragment implements View.OnClickListe
             _view = inflater.inflate(R.layout.stock_list_fragment, null, false);
             isInited = true;
             _warnTxt = (TextView) _view.findViewById(android.R.id.empty);
-            _stockListAdapter = new StockListAdapter(getActivity(), _warnTxt);
+            _stockLetterListAdapter = new StockLetterListAdapter(getActivity(), _warnTxt);
 
             _listView = (ListView) _view.findViewById(android.R.id.list);
-            _listView.setAdapter(_stockListAdapter);
-            _listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                {
-                    if (iFragmentHandler != null)
-                    {
-                        Intent intent = new Intent();
-                        intent.setClass(getActivity(), StockInfoActivity.class);
-                        AccountStockInfo accountStockInfo = (AccountStockInfo) parent.getItemAtPosition(position);
-                        StockInfo stockInfo = StockUtils.getStockInfoByStockNumber(accountStockInfo.get_number());
-                        HistoryBrowsingUtils.saveRecord(stockInfo, StockSystemConstant.HISTORY_VIEW_TYPE);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable(StockSystemConstant.STOCK_INFO, stockInfo);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                    }
-                }
-            });
+            _listView.setAdapter(_stockLetterListAdapter);
             _addStockBtn = (Button) _view.findViewById(R.id.stock_list_fragment_addStockbtn);
             _addStockBtn.setOnClickListener(this);
             _stockCodeTxt = (EditText) _view.findViewById(R.id.stock_list_fragment_inputTxt);
+
+            _letterTxt = (TextView) _view.findViewById(R.id.stock_list_fragment_letterTxt);
+            _letterSideBar = (LetterSideBar) _view.findViewById(R.id.stock_list_fragment_SideBar);
+            _letterSideBar.setTextView(_letterTxt);
+            _letterSideBar.setILetterChange(this);
         }
         return _view;
-
     }
 
     @Override
@@ -125,7 +130,7 @@ public class StockListFragment extends BaseFragment implements View.OnClickListe
             Toast.makeText(getActivity(), R.string.existStock, Toast.LENGTH_LONG).show();
             return;
         }
-        if (StockSystemUtils.isConnectedNetWork(getActivity()) == true)
+        if (StockSystemApplication.getInstance().isConnectedNetWork(getActivity()) == true)
         {
             new AddStockAsyncTask((StockMainActivity)getActivity()).execute(stockCodeStr);
         }
@@ -140,12 +145,14 @@ public class StockListFragment extends BaseFragment implements View.OnClickListe
     @Override
     public void onStop()
     {
+        Log.v("onStop    "," :: StockListFragment ");
         super.onStop();
     }
 
     @Override
     public void onResume()
     {
+        Log.v("onResume    "," :: StockListFragment ");
         super.onResume();
     }
 
@@ -157,10 +164,10 @@ public class StockListFragment extends BaseFragment implements View.OnClickListe
             iFragmentHandler = (IFragmentHandler)getActivity();
         } catch (ClassCastException e) {
             e.printStackTrace();
-            StockSystemUtils.printLog(StockSystemConstant.LOG_ERROR, "", e);
+            StockSystemApplication.getInstance().printLog(StockSystemConstant.LOG_ERROR, "", e);
         } catch (Exception e) {
             e.printStackTrace();
-            StockSystemUtils.printLog(StockSystemConstant.LOG_ERROR, "", e);
+            StockSystemApplication.getInstance().printLog(StockSystemConstant.LOG_ERROR, "", e);
         }
     }
 
@@ -168,6 +175,7 @@ public class StockListFragment extends BaseFragment implements View.OnClickListe
     @Override
     public void onDestroyView()
     {
+        Log.v("onDestroyView    "," :: StockListFragment ");
         super.onDestroyView();
     }
 

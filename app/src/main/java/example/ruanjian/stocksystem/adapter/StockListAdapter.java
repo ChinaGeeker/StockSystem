@@ -13,10 +13,10 @@ import example.ruanjian.stocksystem.utils.AccountUtils;
 import example.ruanjian.stocksystem.info.AccountStockInfo;
 import example.ruanjian.stocksystem.utils.AccountStockUtils;
 
-public class StockListAdapter extends BaseAdapter{
+public class StockListAdapter extends BaseAdapter
+{
 
     private List<AccountStockInfo> _accountStockInfoList;
-
 
     protected Context context;
     private TextView _warnTxt;
@@ -64,11 +64,32 @@ public class StockListAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View view = LayoutInflater.from(context).inflate(R.layout.stock_list_item, null,false);
-        TextView stockTxt = (TextView) view.findViewById(R.id.stockItemTxt);
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
+        View view;
+        ViewHolder viewHolder;
+        if (convertView == null)
+        {
+            viewHolder = new ViewHolder();
+            view = LayoutInflater.from(context).inflate(R.layout.stock_list_item, null,false);
+            viewHolder.stockTxt = (TextView) view.findViewById(R.id.stockItemTxt);
+            view.setTag(viewHolder);
+        }
+        else
+        {
+            viewHolder = (ViewHolder) convertView.getTag();
+            view = convertView;
+        }
         AccountStockInfo accountStockInfo = (AccountStockInfo) getItem(position);
-        stockTxt.setText(accountStockInfo.get_stockName());
+        viewHolder.stockTxt.setText(accountStockInfo.get_stockName());
         return view;
     }
+
+
+    class ViewHolder
+    {
+        TextView stockTxt;
+    }
+
+
 }

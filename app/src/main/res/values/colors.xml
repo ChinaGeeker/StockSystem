@@ -12,4 +12,7 @@
     <color name="colorDarkGray">#A9A9A9</color>
     <color name="colorChocolate">#D2691E</color>
     <color name="colorBuff">#FFFFCC</color>
+    <color name="colorGreen">#00FF00</color>
+    <color name="common_top_bar_blue">#22292c</color>
+    <color name="divider_list">#cccccc</color>
 </resources>

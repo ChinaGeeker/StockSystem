@@ -5,7 +5,7 @@
     <TextView
         android:gravity="center"
         android:textSize="20sp"
-        android:text="日志页面"
+        android:text="@string/logActivity"
         android:background="@color/colorChartreuse"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
@@ -23,9 +23,21 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" />
     </ScrollView>
-    <Button
-        android:text="@string/cleanLog"
-        android:id="@+id/cleanLogBtn"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_weight="1"
+            android:text="@string/cleanLog"
+            android:id="@+id/cleanLogBtn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+        <Button
+            android:layout_weight="1"
+            android:text="@string/exit"
+            android:id="@+id/logReturnBtn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </LinearLayout>

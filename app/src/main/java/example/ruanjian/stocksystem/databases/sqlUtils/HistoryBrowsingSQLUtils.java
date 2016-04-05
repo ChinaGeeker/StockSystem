@@ -1,9 +1,7 @@
 package example.ruanjian.stocksystem.databases.sqlUtils;
 
-import android.util.Log;
-
 import example.ruanjian.stocksystem.utils.StockSystemConstant;
-import example.ruanjian.stocksystem.utils.StockSystemUtils;
+import example.ruanjian.stocksystem.application.StockSystemApplication;
 
 public class HistoryBrowsingSQLUtils extends BaseSQLUtils
 {
@@ -13,7 +11,6 @@ public class HistoryBrowsingSQLUtils extends BaseSQLUtils
     {
         if (_historyBrowsingSQLUtils == null)
         {
-            Log.v("getInstance 数据库 ", "   ");
             _historyBrowsingSQLUtils = new HistoryBrowsingSQLUtils();
         }
         return _historyBrowsingSQLUtils;
@@ -47,11 +44,11 @@ public class HistoryBrowsingSQLUtils extends BaseSQLUtils
                         String[] selectionArgs, String groupBy, String having,
                         String orderBy)
     {
-        if (StockSystemUtils.getStockSystemSQLHelper() == null)
+        if (StockSystemApplication.getInstance().getStockSystemSQLHelper() == null)
         {
             return null;
         }
-        Cursor resultCursor =  StockSystemUtils.getStockSystemSQLHelper().query(StockSystemConstant.HISTORY_BROWSING_TABLE_NAME, columns, selection, selectionArgs, groupBy, having, orderBy);
+        Cursor resultCursor =  StockSystemApplication.getInstance().getStockSystemSQLHelper().query(StockSystemConstant.HISTORY_BROWSING_TABLE_NAME, columns, selection, selectionArgs, groupBy, having, orderBy);
         return resultCursor;
 
 //        Cursor cursor = null;
@@ -74,14 +71,13 @@ public class HistoryBrowsingSQLUtils extends BaseSQLUtils
 
     public int clearRecord(String accountName)
     {
-        if (StockSystemUtils.getStockSystemSQLHelper() == null)
+        if (StockSystemApplication.getInstance().getStockSystemSQLHelper() == null)
         {
             return -1;
         }
         String whereClause = StockSystemConstant.ACCOUNT_NAME + "=?";
         String[] whereArgs = new String[]{accountName};
-        int result = delete(whereClause, whereArgs);
-        return result;
+        return delete(whereClause, whereArgs);
 
         /*_historyDatabase = getWritableDatabase();
         if (_historyDatabase == null)
@@ -99,11 +95,11 @@ public class HistoryBrowsingSQLUtils extends BaseSQLUtils
    /* public int insert(String nullColumnHack, ContentValues values)
     {
 
-        if (StockSystemUtils.getStockSystemSQLHelper() == null)
+        if (StockSystemApplication.getInstance().getStockSystemSQLHelper() == null)
         {
             return -1;
         }
-        int result = StockSystemUtils.getStockSystemSQLHelper().insert(StockSystemConstant.HISTORY_BROWSING_TABLE_NAME, nullColumnHack, values);
+        int result = StockSystemApplication.getInstance().getStockSystemSQLHelper().insert(StockSystemConstant.HISTORY_BROWSING_TABLE_NAME, nullColumnHack, values);
         return result;
         *//*_historyDatabase = getWritableDatabase();
         if (_historyDatabase == null)

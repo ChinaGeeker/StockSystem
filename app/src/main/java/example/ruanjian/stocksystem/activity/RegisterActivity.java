@@ -2,15 +2,13 @@ package example.ruanjian.stocksystem.activity;
 
 import android.os.Bundle;
 import android.view.View;
-import android.app.Activity;
 import android.widget.Button;
 import android.widget.EditText;
 
 import example.ruanjian.stocksystem.R;
-import example.ruanjian.stocksystem.manager.ActivityAppManager;
 import example.ruanjian.stocksystem.asyncTask.RegisterAccountAsyncTask;
 
-public class RegisterActivity extends Activity {
+public class RegisterActivity extends BaseActivity {
 
     private Button _registerBtn;
     private EditText _passwordTxt;
@@ -22,7 +20,6 @@ public class RegisterActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_activity);
         initView();
-        ActivityAppManager.getInstance().addActivity(this);
     }
 
     private void initView()
@@ -40,7 +37,6 @@ public class RegisterActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        ActivityAppManager.getInstance().removeActivity(this);
         super.onDestroy();
     }
 

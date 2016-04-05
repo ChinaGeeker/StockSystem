@@ -2,29 +2,35 @@ package example.ruanjian.stocksystem.asyncTask;
 
 import android.os.AsyncTask;
 
-import example.ruanjian.stocksystem.LoginActivity;
+import example.ruanjian.stocksystem.SplashActivity;
 import example.ruanjian.stocksystem.utils.AccountUtils;
 
 public class GetAllAccountAsyncTask extends AsyncTask<String, Void, Void>{
 
-    private LoginActivity _loginActivity;
+    private SplashActivity _splashActivity;
 
-    public GetAllAccountAsyncTask(LoginActivity loginActivity)
+    public GetAllAccountAsyncTask(SplashActivity splashActivity)
     {
-        this._loginActivity = loginActivity;
+        this._splashActivity = splashActivity;
     }
 
     @Override
     protected Void doInBackground(String... params)
     {
         AccountUtils.queryAllAccountInfo();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
     protected void onPostExecute(Void result)
     {
-        _loginActivity.refreshLogin();
+        _splashActivity.startLoaingActivity();
     }
+
 
 }

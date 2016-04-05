@@ -1,5 +1,7 @@
 package example.ruanjian.stocksystem.activity;
 
+import android.app.AlertDialog;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +17,9 @@ import java.util.List;
 import java.util.ArrayList;
 
 import example.ruanjian.stocksystem.R;
+import example.ruanjian.stocksystem.application.StockSystemApplication;
+import example.ruanjian.stocksystem.broadcast.StockMainBroadcast;
+import example.ruanjian.stocksystem.manager.AlertDialogManager;
 import example.ruanjian.stocksystem.utils.AccountUtils;
 import example.ruanjian.stocksystem.fragment.SettingFragment;
 import example.ruanjian.stocksystem.interce.IFragmentHandler;
@@ -22,7 +27,6 @@ import example.ruanjian.stocksystem.utils.StockSystemConstant;
 import example.ruanjian.stocksystem.adapter.StockPagerAdapter;
 import example.ruanjian.stocksystem.fragment.StockListFragment;
 import example.ruanjian.stocksystem.manager.ActivityAppManager;
-import example.ruanjian.stocksystem.service.RealTimeUpdateService;
 import example.ruanjian.stocksystem.asyncTask.ExitAccountAsyncTask;
 import example.ruanjian.stocksystem.fragment.HistoryRecordFragment;
 
@@ -37,9 +41,13 @@ public class StockMainActivity extends FragmentActivity implements ViewPager.OnP
 
     private List<Fragment> _fragmentList;
 
+    private StockMainBroadcast _stockMainBroadcast;
+
+    protected StockSystemApplication stockSystemApplication;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        stockSystemApplication = (StockSystemApplication) getApplication();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stock_main_activity);
         initView();
@@ -75,7 +83,7 @@ public class StockMainActivity extends FragmentActivity implements ViewPager.OnP
     }
 
     @Override
-    public void handler(int type, Object obj)
+    public void handler(int type)
     {
         switch (type)
         {
@@ -125,10 +133,13 @@ public class StockMainActivity extends FragmentActivity implements ViewPager.OnP
         _accountNameTxt = (TextView) findViewById(R.id.stock_accountNameTxt);
         _exitBtn = (Button) findViewById(R.id.stock_exitBtn);
         _exitBtn.setOnClickListener(this);
+
+        registerBroadcast();
     }
 
     @Override
     protected void onDestroy() {
+        unRegisterBroadcast();
         ActivityAppManager.getInstance().removeActivity(this);
         super.onDestroy();
     }
@@ -149,7 +160,9 @@ public class StockMainActivity extends FragmentActivity implements ViewPager.OnP
                 chooseTypeBtn(StockSystemConstant.TYPE_LIST);
                 break;
             case R.id.stock_exitBtn:
-                new ExitAccountAsyncTask(StockMainActivity.this).execute();
+               AlertDialog _alertDialog = AlertDialogManager.getAlertDialog(this, getString(R.string.exiting));
+                _alertDialog.show();
+                new ExitAccountAsyncTask(StockMainActivity.this, _alertDialog).execute();
                 break;
         }
     }
@@ -223,6 +236,24 @@ public class StockMainActivity extends FragmentActivity implements ViewPager.OnP
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+
+    private void registerBroadcast()
+    {
+        if (_stockMainBroadcast == null)
+        {
+            _stockMainBroadcast = new StockMainBroadcast(this);
+        }
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(StockSystemConstant.STOCK_MAIN_ACTION);
+        registerReceiver(_stockMainBroadcast, intentFilter);
+    }
+
+    private void unRegisterBroadcast()
+    {
+        unregisterReceiver(_stockMainBroadcast);
+        _stockMainBroadcast = null;
     }
 
 

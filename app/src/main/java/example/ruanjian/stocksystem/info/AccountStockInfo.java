@@ -2,8 +2,16 @@ package example.ruanjian.stocksystem.info;
 
 import java.io.Serializable;
 
+import example.ruanjian.stocksystem.utils.PinyinUtils;
+
 public class AccountStockInfo implements Serializable
 {
+
+    private String _letter;
+
+    public String get_letter() {
+        return _letter;
+    }
 
     //股票编号
     private  String _number;
@@ -47,5 +55,6 @@ public class AccountStockInfo implements Serializable
 
     public void set_stockName(String _stockName) {
         this._stockName = _stockName;
+        _letter = PinyinUtils.getFirstUppercaseLetter(_stockName);
     }
 }
