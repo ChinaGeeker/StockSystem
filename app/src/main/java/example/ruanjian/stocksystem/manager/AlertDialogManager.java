@@ -12,7 +12,7 @@ import example.ruanjian.stocksystem.R;
 public class AlertDialogManager
 {
 
-
+    //  不带按钮
     public static AlertDialog getAlertDialog(Context context, String message)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -23,7 +23,6 @@ public class AlertDialogManager
         builder.setView(view);
         return  builder.create();
     }
-
 
     public static void closeAlertDialog(AlertDialog alertDialog)
     {

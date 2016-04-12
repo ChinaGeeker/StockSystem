@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import example.ruanjian.stocksystem.R;
 import example.ruanjian.stocksystem.application.StockSystemApplication;
 import example.ruanjian.stocksystem.broadcast.StockMainBroadcast;
+import example.ruanjian.stocksystem.broadcast.VersionUpgradeBroadcast;
 import example.ruanjian.stocksystem.manager.AlertDialogManager;
 import example.ruanjian.stocksystem.utils.AccountUtils;
 import example.ruanjian.stocksystem.fragment.SettingFragment;
@@ -42,6 +43,8 @@ public class StockMainActivity extends FragmentActivity implements ViewPager.OnP
     private List<Fragment> _fragmentList;
 
     private StockMainBroadcast _stockMainBroadcast;
+
+    private VersionUpgradeBroadcast _versionUpgradeBroadcast;
 
     protected StockSystemApplication stockSystemApplication;
     @Override
@@ -248,10 +251,22 @@ public class StockMainActivity extends FragmentActivity implements ViewPager.OnP
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(StockSystemConstant.STOCK_MAIN_ACTION);
         registerReceiver(_stockMainBroadcast, intentFilter);
+
+
+        if (_versionUpgradeBroadcast == null)
+        {
+            _versionUpgradeBroadcast = new VersionUpgradeBroadcast(this);
+        }
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(StockSystemConstant.VERSION_UPGRADE_ACTION);
+        registerReceiver(_versionUpgradeBroadcast, intentFilter);
     }
 
     private void unRegisterBroadcast()
     {
+        unregisterReceiver(_versionUpgradeBroadcast);
+        _versionUpgradeBroadcast = null;
+
         unregisterReceiver(_stockMainBroadcast);
         _stockMainBroadcast = null;
     }

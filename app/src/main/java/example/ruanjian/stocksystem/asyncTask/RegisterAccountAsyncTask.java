@@ -2,17 +2,31 @@ package example.ruanjian.stocksystem.asyncTask;
 
 import android.os.AsyncTask;
 import android.widget.Toast;
-import android.content.ContentValues;
 
-import example.ruanjian.stocksystem.R;
-import example.ruanjian.stocksystem.info.AccountInfo;
-import example.ruanjian.stocksystem.utils.AccountUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.ConnectException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketException;
+import java.net.URL;
+import java.net.UnknownHostException;
+
+import example.ruanjian.stocksystem.utils.NetworkUtils;
 import example.ruanjian.stocksystem.utils.StockSystemConstant;
 import example.ruanjian.stocksystem.activity.RegisterActivity;
 
-public class RegisterAccountAsyncTask extends AsyncTask<String, Void, Boolean> {
+public class RegisterAccountAsyncTask extends AsyncTask<String, Void, Void>
+{
 
+    private int _registerResult = 0;
 
+    private String _registerMessage = "";
     private RegisterActivity _registerActivity;
 
     public RegisterAccountAsyncTask(RegisterActivity registerActivity)
@@ -21,54 +35,28 @@ public class RegisterAccountAsyncTask extends AsyncTask<String, Void, Boolean> {
     }
 
     @Override
-    protected Boolean doInBackground(String... params)
+    protected Void doInBackground(String... params)
     {
-        boolean isRegisterSuccess = false;
         String accountNameStr = params[0];
         String accountPasswordStr = params[1];
-        String selection = StockSystemConstant.ACCOUNT_COLUMN_ACCOUNT_NAME + "=?";
-
-        boolean isExist = AccountUtils.isExist(selection, new String[]{accountNameStr});
-        if (isExist == false)
-        {
-            int loginTimes = (int) (System.currentTimeMillis() / 1000);
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(StockSystemConstant.ACCOUNT_COLUMN_ICON_PATH_NAME, StockSystemConstant.DEFAULT);
-            contentValues.put(StockSystemConstant.ACCOUNT_COLUMN_LOGIN_STATE_NAME, StockSystemConstant.STATE_CANCELED);
-            contentValues.put(StockSystemConstant.ACCOUNT_COLUMN_ACCOUNT_NAME, accountNameStr);
-            contentValues.put(StockSystemConstant.ACCOUNT_COLUMN_PASSWORD_NAME, accountPasswordStr);
-            contentValues.put(StockSystemConstant.ACCOUNT_COLUMN_LOGIN_TIME_NAME, loginTimes);
-
-            AccountInfo accountInfo = new AccountInfo();
-            accountInfo.set_accountName(accountNameStr);
-            accountInfo.set_password(accountPasswordStr);
-            accountInfo.set_userIconPath(StockSystemConstant.DEFAULT);
-            accountInfo.set_loginTime(loginTimes);
-            accountInfo.set_loginState(StockSystemConstant.STATE_CANCELED);
-            int insertResult = AccountUtils.insertAccount(null, contentValues);
-            if (insertResult <= -1)
-            {
-                isRegisterSuccess = false;
-            }
-            else
-            {
-                AccountUtils.addAccountInfo(accountInfo);
-                isRegisterSuccess = true;
-            }
+        String parameterData = StockSystemConstant.ACCOUNT_NAME + "=" + accountNameStr+"&"
+                + StockSystemConstant.ACCOUNT_COLUMN_PASSWORD_NAME + "=" + accountPasswordStr;
+        Object obj = NetworkUtils.sendHttpUrlConnecttionByPost(StockSystemConstant.REGISTER_URL, parameterData);
+        try {
+            JSONObject jsonObject = new JSONObject(obj.toString());
+            _registerResult = jsonObject.getInt(StockSystemConstant.RETURN_TYPE);
+            _registerMessage = jsonObject.getString(StockSystemConstant.RETURN_MESSAGE);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        return isRegisterSuccess;
+        return null;
     }
-
     @Override
-    protected void onPostExecute(Boolean isRegisterSuccess)
+    protected void onPostExecute(Void result)
     {
-        if (isRegisterSuccess == false)
+        Toast.makeText(_registerActivity, _registerMessage, Toast.LENGTH_LONG).show();
+        if (_registerResult == StockSystemConstant.STATE_SUCCESS)
         {
-            Toast.makeText(_registerActivity, R.string.havedregistered, Toast.LENGTH_LONG).show();
-        }
-        else
-        {
-            Toast.makeText(_registerActivity, R.string.registeredSuccess, Toast.LENGTH_LONG).show();
             _registerActivity.finish();
         }
     }

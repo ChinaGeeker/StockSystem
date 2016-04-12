@@ -1,8 +1,8 @@
 package example.ruanjian.stocksystem.utils;
 
-import android.util.Log;
-import android.database.Cursor;
-import android.content.ContentValues;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 import java.util.HashMap;
@@ -10,12 +10,9 @@ import java.util.ArrayList;
 
 import example.ruanjian.stocksystem.info.StockInfo;
 import example.ruanjian.stocksystem.info.AccountStockInfo;
-import example.ruanjian.stocksystem.databases.sqlUtils.AccountStockSQLUtils;
 
 public class AccountStockUtils
 {
-    public static AccountStockSQLUtils accountStockSQLUtils;
-
     private static HashMap<String, List<AccountStockInfo>>  _accountStockHashMap = null;
 
     public static boolean isEmptyByAccountName(String accountName)
@@ -58,19 +55,9 @@ public class AccountStockUtils
     {
         String whereClause = StockSystemConstant.ACCOUNT_COLUMN_ACCOUNT_NAME + "=?";
         String[] whereArgs = new String[]{accountName + ""};
-        int resultIndex = accountStockSQLUtils.delete(whereClause, whereArgs);
+//        int resultIndex = accountStockSQLUtils.delete(whereClause, whereArgs);
         _accountStockHashMap.remove(accountName);
-
-
-        if (resultIndex <= -1)
-        {
-            Log.v("测试", "delete 账号里 股票  删除账号失败");
-        }
-        else
-        {
-            Log.v("测试", "delete账号里 股票  删除账号成功g");
-        }
-        return resultIndex;
+        return 1;
     }
 
 
@@ -101,28 +88,33 @@ public class AccountStockUtils
         {
             _accountStockHashMap = new HashMap<String, List<AccountStockInfo>>();
         }
-        String selection = StockSystemConstant.ACCOUNT_COLUMN_ACCOUNT_NAME + "=?";
-        String[] selectionArgs = new String[]{accountName + ""};
-        String orderBy = StockSystemConstant.RECORD_TIME_NAME + " desc";
-        Cursor cursor = accountStockSQLUtils.query(null, selection, selectionArgs, "","",orderBy);
-        if (cursor == null)
-        {
-            return;
-        }
         _accountStockHashMap.remove(accountName);
-        List<AccountStockInfo> accountStockInfoList = new ArrayList<AccountStockInfo>();
-        while (cursor.moveToNext())
-        {
-            AccountStockInfo accountStockInfo = new AccountStockInfo();
-            String stockNumber = cursor.getString(cursor.getColumnIndex(StockSystemConstant.STOCK_NUMBER));
-            int recordTime = cursor.getInt(cursor.getColumnIndex(StockSystemConstant.RECORD_TIME_NAME));
-            String stockName = cursor.getString(cursor.getColumnIndex(StockSystemConstant.STOCK_TITLE_NAME));
-            accountStockInfo.set_accountName(accountName);
-            accountStockInfo.set_number(stockNumber);
-            accountStockInfo.set_stockName(stockName);
-            accountStockInfo.set_recordTime(recordTime);
-            accountStockInfoList.add(accountStockInfo);
-            _accountStockHashMap.put(accountName, accountStockInfoList);
+        String parameterData = StockSystemConstant.ACCOUNT_NAME + "=" + AccountUtils.getCurLoginAccountInfo().get_accountName();
+        String resultObj = NetworkUtils.sendHttpUrlConnecttionByPost(StockSystemConstant.QUERY_ACCOUNT_STOCK_URL, parameterData).toString();
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(resultObj);
+//            _registerResult = jsonObject.getInt(StockSystemConstant.RETURN_TYPE);
+//            _registerMessage = jsonObject.getString(StockSystemConstant.RETURN_MESSAGE);
+            JSONArray contentJsoArr = jsonObject.getJSONArray(StockSystemConstant.RETURN_CONTENT);
+            List<AccountStockInfo> accountStockInfoList = new ArrayList<AccountStockInfo>();
+            for (int index = 0; index < contentJsoArr.length(); index++)
+            {
+                JSONObject contentJson =  contentJsoArr.getJSONObject(index);
+                AccountStockInfo accountStockInfo = new AccountStockInfo();
+
+                String stockNumber = contentJson.getString(StockSystemConstant.STOCK_NUMBER);
+                int recordTime = contentJson.getInt(StockSystemConstant.RECORD_TIME_NAME);
+                String stockName = contentJson.getString(StockSystemConstant.STOCK_TITLE_NAME);
+                accountStockInfo.set_accountName(accountName);
+                accountStockInfo.set_number(stockNumber);
+                accountStockInfo.set_stockName(stockName);
+                accountStockInfo.set_recordTime(recordTime);
+                accountStockInfoList.add(accountStockInfo);
+                _accountStockHashMap.put(accountName, accountStockInfoList);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -140,25 +132,11 @@ public class AccountStockUtils
         {
             if (accountStockInfo.get_number().equals(stockInfo.get_number()))
             {
-                Log.v("removeStockInfo 失败  ", accountName + " 沙河年初  " + stockInfo.getName());
                 accountStockInfoList.remove(accountStockInfo);
                 break;
             }
         }
-        String whereClause = StockSystemConstant.ACCOUNT_COLUMN_ACCOUNT_NAME + "=?and " + StockSystemConstant.STOCK_NUMBER + "=?";
-        String[] whereArgs = new String[]{accountName + "",stockInfo.get_number()};
-        int result = accountStockSQLUtils.delete(whereClause, whereArgs);
         HistoryBrowsingUtils.saveRecord(stockInfo, StockSystemConstant.HISTORY_REMOVE_TYPE);
-       /* if (result <= -1)
-        {
-            Log.v("removeStockInfo 失败  ", accountName + " 保存记录  " + stockInfo.getName());
-        }
-        else
-        {
-            Log.v("removeStockInfo 成功  ", accountName + " 保存记录  " + stockInfo.getName());
-        }*/
-
-
     }
 
     public static void  plusStockInfo(StockInfo stockInfo)
@@ -181,7 +159,7 @@ public class AccountStockUtils
         accountStockInfo.set_recordTime((int) (System.currentTimeMillis() / 1000));
         accountStockInfoList.add(accountStockInfo);
         _accountStockHashMap.put(accountName, accountStockInfoList);
-        int result = accountStockSQLUtils.insert(null, getContentValues(accountStockInfo));
+//        int result = accountStockSQLUtils.insert(null, getContentValues(accountStockInfo));
         /*if (result <= -1)
         {
             Log.v("plusStockInfo 失败  ", accountName + " 保存记录  " + stockInfo.getName());
@@ -191,16 +169,6 @@ public class AccountStockUtils
             Log.v("plusStockInfo 成功  ", accountName + " 保存记录  " + stockInfo.getName());
         }*/
         HistoryBrowsingUtils.saveRecord(stockInfo, StockSystemConstant.HISTORY_ADD_TYPE);
-    }
-
-    private static ContentValues getContentValues(AccountStockInfo accountStockInfo)
-    {
-        ContentValues contentValue = new ContentValues();
-        contentValue.put(StockSystemConstant.ACCOUNT_COLUMN_ACCOUNT_NAME, accountStockInfo.get_accountName());
-        contentValue.put(StockSystemConstant.STOCK_TITLE_NAME, accountStockInfo.get_stockName());
-        contentValue.put(StockSystemConstant.STOCK_NUMBER, accountStockInfo.get_number());
-        contentValue.put(StockSystemConstant.RECORD_TIME_NAME, accountStockInfo.get_recordTime());
-        return contentValue;
     }
 
 }

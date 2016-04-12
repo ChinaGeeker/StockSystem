@@ -50,7 +50,7 @@ public class StockListFragment extends BaseFragment implements View.OnClickListe
     @Override
     public void loading()
     {
-        if (isInited == true || isVisible == true)
+        if (isInited == true && isVisible == true)
         {
             new GetAccountStockAsyncTask().execute();
         }
@@ -112,6 +112,7 @@ public class StockListFragment extends BaseFragment implements View.OnClickListe
             _letterSideBar = (LetterSideBar) _view.findViewById(R.id.stock_list_fragment_SideBar);
             _letterSideBar.setTextView(_letterTxt);
             _letterSideBar.setILetterChange(this);
+            loading();
         }
         return _view;
     }
@@ -130,7 +131,7 @@ public class StockListFragment extends BaseFragment implements View.OnClickListe
             Toast.makeText(getActivity(), R.string.existStock, Toast.LENGTH_LONG).show();
             return;
         }
-        if (StockSystemApplication.getInstance().isConnectedNetWork(getActivity()) == true)
+        if (StockSystemApplication.getInstance().isConnectedNetWork() == true)
         {
             new AddStockAsyncTask((StockMainActivity)getActivity()).execute(stockCodeStr);
         }

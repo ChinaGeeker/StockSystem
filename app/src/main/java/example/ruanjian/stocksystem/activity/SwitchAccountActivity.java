@@ -36,7 +36,7 @@ public class SwitchAccountActivity extends BaseActivity implements AdapterView.O
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         AccountInfo accountInfo = (AccountInfo) parent.getItemAtPosition(position);
-        AccountUtils.updateLoginAccount(accountInfo.get_accountName(), accountInfo.get_password());
+        AccountUtils.switchLoginAccount(accountInfo.get_accountName());
         AccountUtils.setCurLoginAccountInfo(accountInfo);
         finish();
     }

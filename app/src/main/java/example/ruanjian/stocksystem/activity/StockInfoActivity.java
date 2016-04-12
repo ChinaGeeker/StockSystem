@@ -1,5 +1,6 @@
 package example.ruanjian.stocksystem.activity;
 
+import android.content.Context;
 import android.content.IntentFilter;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.content.DialogInterface;
 
 import example.ruanjian.stocksystem.R;
+import example.ruanjian.stocksystem.asyncTask.DeleteAccountStockAsyncTask;
 import example.ruanjian.stocksystem.info.StockInfo;
 import example.ruanjian.stocksystem.utils.AccountStockUtils;
 import example.ruanjian.stocksystem.manager.BroadcastManager;
@@ -42,9 +44,11 @@ public class StockInfoActivity extends BaseActivity {
     private StockGifImageBroadcast _stockGifImageBroadcast;
 
 
+    private Context _context;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        _context = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stock_info_activity);
         initView();
@@ -92,11 +96,8 @@ public class StockInfoActivity extends BaseActivity {
             public void onClick(View v) {
                 if (_curStockInfo != null) {
                     AccountStockUtils.removeStockInfo(_curStockInfo);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(StockSystemConstant.STOCK_MAIN_TYPE, StockSystemConstant.TYPE_LIST);
-                    BroadcastManager.getInstance().sendBroadcast(StockSystemConstant.STOCK_MAIN_ACTION, bundle);
+                    new DeleteAccountStockAsyncTask(_context).execute(_curStockInfo.get_number());
                 }
-                finish();
             }
         });
         registerBroadcast();
@@ -193,7 +194,7 @@ public class StockInfoActivity extends BaseActivity {
         {
             return;
         }
-        if (stockSystemApplication.isConnectedNetWork(this) == true)
+        if (stockSystemApplication.isConnectedNetWork() == true)
         {
             if (_alertDialog == null)
             {

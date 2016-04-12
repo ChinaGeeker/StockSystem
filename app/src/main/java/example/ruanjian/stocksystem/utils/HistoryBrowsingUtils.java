@@ -45,6 +45,10 @@ public class HistoryBrowsingUtils
 
     public static int saveRecord(StockInfo stockInfo, int historyType)
     {
+        if (stockInfo == null)
+        {
+            return -1;
+        }
         String accountName = AccountUtils.getCurLoginAccountInfo().get_accountName();
         String timeStr = StockSystemApplication.getInstance().getCurTimeStringOne();
         String recordDetail = "";

@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 
 import example.ruanjian.stocksystem.R;
 import example.ruanjian.stocksystem.application.StockSystemApplication;
+import example.ruanjian.stocksystem.asyncTask.CheckVersionAsyncTask;
 import example.ruanjian.stocksystem.utils.AccountUtils;
 import example.ruanjian.stocksystem.activity.LogActivity;
 import example.ruanjian.stocksystem.utils.StockSystemConstant;
@@ -41,8 +42,8 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     private Button _lookLogBtn;
     private ImageView _iconBtn;
     private Button _forbidUpdateBtn;
+    private Button _checkVersionBtn;
     private Button _changeAccountBtn;
-
 
     private PopupWindow _picPopupWindow;
 
@@ -74,10 +75,13 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
 
             _forbidUpdateBtn = (Button) _view.findViewById(R.id.forbidUpdateBtn);
             _forbidUpdateBtn.setOnClickListener(this);
+
+            _checkVersionBtn = (Button) _view.findViewById(R.id.checkVersionBtn);
+            _checkVersionBtn.setOnClickListener(this);
+
         }
        return _view;
     }
-
 
     private void refreshData()
     {
@@ -116,6 +120,12 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 StockSystemApplication.getInstance().stateRealTimeUpdate = StockSystemConstant.STATE_CANCELED;
                 intent.setClass(getActivity(), RealTimeUpdateService.class);
                 getActivity().stopService(intent);
+                break;
+            case R.id.checkVersionBtn:
+                if (StockSystemApplication.getInstance().isConnectedNetWork() == true)
+                {
+                    new CheckVersionAsyncTask().execute();
+                }
                 break;
         }
     }

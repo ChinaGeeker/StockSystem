@@ -14,6 +14,7 @@ public class RegisterActivity extends BaseActivity {
     private EditText _passwordTxt;
     private EditText _accountNameTxt;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -30,7 +31,12 @@ public class RegisterActivity extends BaseActivity {
         _registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new RegisterAccountAsyncTask(RegisterActivity.this).execute(_accountNameTxt.getText().toString(), _passwordTxt.getText().toString());
+                boolean isConnected = stockSystemApplication.isConnectedNetWork();
+                if (isConnected == true)
+                {
+                    new RegisterAccountAsyncTask(RegisterActivity.this).execute(_accountNameTxt.getText().toString(), _passwordTxt.getText().toString());
+                }
+
             }
         });
     }

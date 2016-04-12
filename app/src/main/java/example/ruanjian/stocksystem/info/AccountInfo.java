@@ -5,7 +5,6 @@ import java.io.Serializable;
 public class AccountInfo implements Serializable
 {
 
-
     private int _loginState = 0; //0 为没有登录, 1 登录
 
     private String _password;

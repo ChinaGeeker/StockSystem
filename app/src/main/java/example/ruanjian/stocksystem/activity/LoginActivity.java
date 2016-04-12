@@ -83,7 +83,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
         _passwordTxt.setText(accountInfo.get_password());
         _accountNameTxt.setText(accountInfo.get_accountName());
         _accountNameTxt.setSelection(accountInfo.get_accountName().length());
-
         Bitmap bitmap = AccountUtils.getBitmapByIconPath(accountInfo.get_userIconPath(), this);
         if (bitmap != null)
         {
@@ -206,10 +205,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
                     Toast.makeText(LoginActivity.this, R.string.passwordNotEmpty, Toast.LENGTH_LONG).show();
                     return;
                 }
-                String accountNameStr = _accountNameTxt.getText().toString();
-                String passwordStr = _passwordTxt.getText().toString();
-                showAlertDialog(getString(R.string.logining));
-                new LoginAccountAsyncTask(this, _alertDialog).execute(accountNameStr, passwordStr);
+
+                boolean isConnected = stockSystemApplication.isConnectedNetWork();
+                if (isConnected == true)
+                {
+                    String accountNameStr = _accountNameTxt.getText().toString();
+                    String passwordStr = _passwordTxt.getText().toString();
+                    showAlertDialog(getString(R.string.logining));
+                    new LoginAccountAsyncTask(this, _alertDialog).execute(accountNameStr, passwordStr);
+                }
                 break;
         }
     }

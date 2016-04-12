@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import example.ruanjian.stocksystem.R;
-import example.ruanjian.stocksystem.manager.BroadcastManager;
 import example.ruanjian.stocksystem.utils.AccountUtils;
+import example.ruanjian.stocksystem.manager.BroadcastManager;
 import example.ruanjian.stocksystem.utils.StockSystemConstant;
 import example.ruanjian.stocksystem.activity.StockMainActivity;
 import example.ruanjian.stocksystem.utils.HistoryBrowsingUtils;
@@ -36,7 +36,6 @@ public class GetHistoryRecordAsyncTask extends AsyncTask<String, Void, Void>
     @Override
     protected void onPostExecute(Void result)
     {
-
         Bundle bundle = new Bundle();
         bundle.putInt(StockSystemConstant.STOCK_MAIN_TYPE, StockSystemConstant.TYPE_HISTORY);
         BroadcastManager.getInstance().sendBroadcast(StockSystemConstant.STOCK_MAIN_ACTION, bundle);
