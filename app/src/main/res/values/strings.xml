@@ -18,6 +18,7 @@
     <string name="lookLog">查看日志</string>
     <string name="cleanLog">清空日志</string>
     <string name="noLog">尚无日志</string>
+    <string name="checkVersion">检查版本</string>
     <string name="forbidUpdate">停止实时更新</string>
     <string name="realTimeUpdateWarn">是否实时更新此股票信息?</string>
     <string name="accountEmpty">当前登录账号为空</string>

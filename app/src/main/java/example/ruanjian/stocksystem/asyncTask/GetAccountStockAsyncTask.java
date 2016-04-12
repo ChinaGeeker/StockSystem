@@ -3,27 +3,26 @@ package example.ruanjian.stocksystem.asyncTask;
 import android.os.Bundle;
 import android.os.AsyncTask;
 
+import example.ruanjian.stocksystem.application.StockSystemApplication;
 import example.ruanjian.stocksystem.utils.StockUtils;
 import example.ruanjian.stocksystem.utils.AccountStockUtils;
 import example.ruanjian.stocksystem.manager.BroadcastManager;
 import example.ruanjian.stocksystem.utils.StockSystemConstant;
 
-
-public class GetAccountStockAsyncTask extends AsyncTask<Void, Void, Void>{
-
+public class GetAccountStockAsyncTask extends AsyncTask<Void, Void, Void>
+{
 
     public GetAccountStockAsyncTask()
     {
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
-
-        if (StockUtils.isEmpty() == true)
+    protected Void doInBackground(Void... params)
+    {
+        if (StockSystemApplication.getInstance().isConnectedNetWork() == true)
         {
-            StockUtils.queryAllStock();
+            AccountStockUtils.queryAccountStock();
         }
-        AccountStockUtils.queryAccountStock();
         return null;
     }
 

@@ -1,18 +1,18 @@
 package example.ruanjian.stocksystem.utils;
 
-import android.database.Cursor;
 import android.content.ContentValues;
+import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
 import example.ruanjian.stocksystem.info.StockInfo;
-import example.ruanjian.stocksystem.databases.sqlUtils.StockSQLUtils;
 
 
 public class StockUtils
 {
-    public static StockSQLUtils stockSQLUtils;
-
     private static HashMap<String, StockInfo> _stockInfoHashMap = null;
 
     public static StockInfo analysisStockData(String result, String stockNumber)
@@ -26,6 +26,29 @@ public class StockUtils
         stockInfo.set_openingPrice(stockInfoDataArr[StockSystemConstant.OPENING_PRICE]);
         stockInfo.set_maxPrice(stockInfoDataArr[StockSystemConstant.MAX_PRICE]);
         stockInfo.set_minPrice(stockInfoDataArr[StockSystemConstant.MIN_PRICE]);
+        return stockInfo;
+    }
+
+
+    public static StockInfo getStockInfoByJsonObject(JSONObject stockInfoJson)
+    {
+        if (stockInfoJson == null)
+        {
+            return null;
+        }
+        StockInfo stockInfo = null;
+        try {
+            stockInfo = new StockInfo();
+            stockInfo.set_number(stockInfoJson.getString(StockSystemConstant.STOCK_NUMBER));
+            stockInfo.setName(stockInfoJson.getString(StockSystemConstant.STOCK_NAME));
+            stockInfo.set_currentPrice(stockInfoJson.getString(StockSystemConstant.STOCK_CURRENT_PRICE));
+            stockInfo.setClosing_price(stockInfoJson.getString(StockSystemConstant.STOCK_CLOSING_PRICE));
+            stockInfo.set_openingPrice(stockInfoJson.getString(StockSystemConstant.STOCK_OPENING_PRICE));
+            stockInfo.set_maxPrice(stockInfoJson.getString(StockSystemConstant.STOCK_MAX_PRICE));
+            stockInfo.set_minPrice(stockInfoJson.getString(StockSystemConstant.STOCK_MIN_PRICE));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return stockInfo;
     }
 
@@ -67,49 +90,13 @@ public class StockUtils
         return _stockInfoHashMap.isEmpty();
     }
 
-    public static void queryAllStock()
+    public static void searchPlusStockInfo(StockInfo stockInfo)
     {
-        if (_stockInfoHashMap == null)
+        if (stockInfo == null)
         {
-            _stockInfoHashMap = new HashMap<String, StockInfo>();
+            return;
         }
-        Cursor cursor = stockSQLUtils.query(null, null, null, null, null, null);
-       if (cursor == null)
-       {
-           return;
-       }
-        while (cursor.moveToNext())
-        {
-            StockInfo stockInfo = new StockInfo();
-            String stockNumber = cursor.getString(cursor.getColumnIndex(StockSystemConstant.STOCK_NUMBER));
-            stockInfo.set_number(stockNumber);
-            String stockTitleName = cursor.getString(cursor.getColumnIndex(StockSystemConstant.STOCK_TITLE_NAME));
-            stockInfo.setName(stockTitleName);
-            String stockOpeningPrice = cursor.getString(cursor.getColumnIndex(StockSystemConstant.STOCK_OPENING_PRICE));
-            stockInfo.set_openingPrice(stockOpeningPrice);
-            String stockClosingPrice = cursor.getString(cursor.getColumnIndex(StockSystemConstant.STOCK_CLOSING_PRICE));
-            stockInfo.setClosing_price(stockClosingPrice);
-            String stockCurPrice = cursor.getString(cursor.getColumnIndex(StockSystemConstant.STOCK_CURRENT_PRICE));
-            stockInfo.set_currentPrice(stockCurPrice);
-            String stockMaxPrice = cursor.getString(cursor.getColumnIndex(StockSystemConstant.STOCK_MAX_PRICE));
-            stockInfo.set_maxPrice(stockMaxPrice);
-            String stockMinPrice = cursor.getString(cursor.getColumnIndex(StockSystemConstant.STOCK_MIN_PRICE));
-            stockInfo.set_maxPrice(stockMinPrice);
-            _stockInfoHashMap.put(stockNumber,stockInfo);
-        }
-    }
-
-    private static ContentValues getContentValueByStockInfo(StockInfo stockInfo)
-    {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(StockSystemConstant.STOCK_NUMBER, stockInfo.get_number());
-        contentValues.put(StockSystemConstant.STOCK_TITLE_NAME, stockInfo.getName());
-        contentValues.put(StockSystemConstant.STOCK_OPENING_PRICE, stockInfo.get_openingPrice());
-        contentValues.put(StockSystemConstant.STOCK_CLOSING_PRICE, stockInfo.getClosing_price());
-        contentValues.put(StockSystemConstant.STOCK_CURRENT_PRICE, stockInfo.get_currentPrice());
-        contentValues.put(StockSystemConstant.STOCK_MAX_PRICE, stockInfo.get_maxPrice());
-        contentValues.put(StockSystemConstant.STOCK_MIN_PRICE, stockInfo.get_minPrice());
-        return contentValues;
+        _stockInfoHashMap.put(stockInfo.get_number(), stockInfo);
     }
 
     public static void addStockInfo(StockInfo stockInfo)
@@ -118,26 +105,42 @@ public class StockUtils
         {
             return;
         }
+        String parameterData = StockSystemConstant.STOCK_NAME + "=" + stockInfo.getName()+"&"
+                + StockSystemConstant.STOCK_NUMBER + "=" + stockInfo.get_number()+"&"
+                + StockSystemConstant.STOCK_CLOSING_PRICE + "=" + stockInfo.getClosing_price()+"&"
+                + StockSystemConstant.STOCK_CURRENT_PRICE + "=" + stockInfo.getCurrentPrice()+"&"
+                + StockSystemConstant.STOCK_MAX_PRICE + "=" + stockInfo.get_maxPrice()+"&"
+                + StockSystemConstant.STOCK_MIN_PRICE + "=" + stockInfo.get_minPrice()+"&"
+                + StockSystemConstant.STOCK_OPENING_PRICE + "=" + stockInfo.get_openingPrice();
         if (isExistStock(stockInfo.get_number()) == true)
         {
             updateStockData(stockInfo);
             return;
         }
-        ContentValues contentValues = getContentValueByStockInfo(stockInfo);
-        Cursor cursor = stockSQLUtils.query(new String[]{StockSystemConstant.STOCK_NUMBER}, StockSystemConstant.STOCK_NUMBER + "=?",
-                new String[]{stockInfo.get_number()}, null, null, null);
-        if (cursor == null || cursor.moveToNext() == false)
-        {
-            // 数据库中没有此数据
-            stockSQLUtils.insert(null, contentValues);
-            AccountStockUtils.plusStockInfo(stockInfo);
-        }
+        String resultObj = NetworkUtils.sendHttpUrlConnecttionByPost(StockSystemConstant.ADD_STOCK_URL, parameterData).toString();
+        parameterData = StockSystemConstant.STOCK_NAME + "=" + stockInfo.getName()+"&"
+                + StockSystemConstant.STOCK_NUMBER + "=" + stockInfo.get_number()+"&"
+                + StockSystemConstant.ACCOUNT_NAME + "=" + AccountUtils.getCurLoginAccountInfo().get_accountName();
+
+        resultObj = NetworkUtils.sendHttpUrlConnecttionByPost(StockSystemConstant.ADD_ACCOUNT_STOCK_URL, parameterData).toString();
+
         _stockInfoHashMap.put(stockInfo.get_number(), stockInfo);
     }
 
     public static void updateStockData(StockInfo stockInfo)
     {
-        stockSQLUtils.update(getContentValueByStockInfo(stockInfo), StockSystemConstant.STOCK_NUMBER + "=?", new String[]{stockInfo.get_number()});
+        if (stockInfo == null)
+        {
+            return;
+        }
+        String parameterData = StockSystemConstant.STOCK_NAME + "=" + stockInfo.getName()+"&"
+                + StockSystemConstant.STOCK_NUMBER + "=" + stockInfo.get_number()+"&"
+                + StockSystemConstant.STOCK_CLOSING_PRICE + "=" + stockInfo.getClosing_price()+"&"
+                + StockSystemConstant.STOCK_CURRENT_PRICE + "=" + stockInfo.getCurrentPrice()+"&"
+                + StockSystemConstant.STOCK_MAX_PRICE + "=" + stockInfo.get_maxPrice()+"&"
+                + StockSystemConstant.STOCK_MIN_PRICE + "=" + stockInfo.get_minPrice()+"&"
+                + StockSystemConstant.STOCK_OPENING_PRICE + "=" + stockInfo.get_openingPrice();
+        String resultObj = NetworkUtils.sendHttpUrlConnecttionByPost(StockSystemConstant.UPDATE_STOCK_URL, parameterData).toString();
         _stockInfoHashMap.put(stockInfo.get_number(), stockInfo);
     }
 

@@ -26,13 +26,18 @@ public class ChangeAccountAdapter extends BaseAdapter
     @Override
     public int getCount()
     {
-        return AccountUtils.getAllAccountInfo().size();
+        return AccountUtils.getAllAccountInfo().size() - 1;//自己不算在内
     }
 
     @Override
     public Object getItem(int position)
     {
-        return AccountUtils.getAllAccountInfo().get(position);
+        int index = position;
+        if (position >= AccountUtils.curLoginPosition)
+        {
+            index++;
+        }
+        return AccountUtils.getAllAccountInfo().get(index);
     }
 
     @Override

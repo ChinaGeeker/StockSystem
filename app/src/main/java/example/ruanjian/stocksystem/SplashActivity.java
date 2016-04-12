@@ -7,10 +7,10 @@ import example.ruanjian.stocksystem.utils.AccountUtils;
 import example.ruanjian.stocksystem.activity.BaseActivity;
 import example.ruanjian.stocksystem.activity.LoginActivity;
 import example.ruanjian.stocksystem.activity.StockMainActivity;
-import example.ruanjian.stocksystem.asyncTask.GetAllAccountAsyncTask;
 
 public class SplashActivity extends BaseActivity
 {
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -36,14 +36,7 @@ public class SplashActivity extends BaseActivity
         }
         else
         {
-            if (AccountUtils.getAllAccountInfo().size() <= 0)
-            {
-                new GetAllAccountAsyncTask(this).execute();
-            }
-            else
-            {
-               startLoaingActivity();
-            }
+            startLoaingActivity();
         }
         super.onStart();
     }
@@ -69,9 +62,6 @@ public class SplashActivity extends BaseActivity
     {
         super.onStop();
     }
-
-
-
 
     @Override
     protected void onDestroy()

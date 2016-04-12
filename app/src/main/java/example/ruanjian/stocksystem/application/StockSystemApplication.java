@@ -30,8 +30,10 @@ import java.util.Date;
 import java.util.List;
 
 import example.ruanjian.stocksystem.R;
+import example.ruanjian.stocksystem.info.VersionInfo;
 import example.ruanjian.stocksystem.log.Logger;
 import example.ruanjian.stocksystem.info.StockInfo;
+import example.ruanjian.stocksystem.utils.AccountUtils;
 import example.ruanjian.stocksystem.utils.StockUtils;
 import example.ruanjian.stocksystem.activity.LoginActivity;
 import example.ruanjian.stocksystem.manager.ActivityAppManager;
@@ -53,10 +55,21 @@ public class StockSystemApplication extends Application
         return _instance;
     }
 
+    private VersionInfo _versionInfo;
+
+    public VersionInfo get_versionInfo() {
+        return _versionInfo;
+    }
+
+    public void set_versionInfo(VersionInfo _versionInfo) {
+        this._versionInfo = _versionInfo;
+    }
 
     @Override
     public void onCreate()
     {
+
+        Log.v(" 应用 创建了 ： ", "当前账号 个数  ： " + AccountUtils.getAllAccountInfo().size() + " ");
         super.onCreate();
         _instance = this;
         initUtils();
@@ -81,6 +94,10 @@ public class StockSystemApplication extends Application
                 break;
         }
     }
+
+
+
+
 
     public void sendNotifition(StockInfo stockInfo)
     {
@@ -171,18 +188,18 @@ public class StockSystemApplication extends Application
         }
     }
 
-    public boolean isConnectedNetWork(Context context)
+    public boolean isConnectedNetWork()
     {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo == null)
         {
-            Toast.makeText(context, R.string.netWrongFailed, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.netWrongFailed, Toast.LENGTH_LONG).show();
             return false;
         }
         if (networkInfo.isAvailable() == false)
         {
-            Toast.makeText(context, networkInfo.getTypeName() + R.string.netWrongFailed, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, networkInfo.getTypeName() + R.string.netWrongFailed, Toast.LENGTH_LONG).show();
             return false;
         }
 //        if (networkInfo == null || networkInfo.isAvailable() == false)
@@ -190,7 +207,7 @@ public class StockSystemApplication extends Application
 //            Toast.makeText(context, R.string.netWrongFailed, Toast.LENGTH_LONG).show();
 //            return false;
 //        }
-        Toast.makeText(context,  context.getString(R.string.curNetType) + networkInfo.getTypeName(), Toast.LENGTH_LONG).show();
+       // Toast.makeText(this,  context.getString(R.string.curNetType) + networkInfo.getTypeName(), Toast.LENGTH_LONG).show();
         return true;
     }
 

@@ -2,6 +2,7 @@ package example.ruanjian.stocksystem.asyncTask;
 
 import android.os.AsyncTask;
 import android.app.AlertDialog;
+import android.util.Log;
 
 import example.ruanjian.stocksystem.info.AccountInfo;
 import example.ruanjian.stocksystem.utils.AccountUtils;
@@ -9,6 +10,8 @@ import example.ruanjian.stocksystem.activity.LoginActivity;
 import example.ruanjian.stocksystem.utils.AccountStockUtils;
 import example.ruanjian.stocksystem.manager.AlertDialogManager;
 import example.ruanjian.stocksystem.utils.HistoryBrowsingUtils;
+import example.ruanjian.stocksystem.utils.NetworkUtils;
+import example.ruanjian.stocksystem.utils.StockSystemConstant;
 
 public class DeleteAccountAsyncTask extends AsyncTask<String, Void, Integer>
 {
@@ -26,10 +29,10 @@ public class DeleteAccountAsyncTask extends AsyncTask<String, Void, Integer>
     protected Integer doInBackground(String... params)
     {
         _accountName = params[0];
-        int resultIndex = AccountUtils.delete(_accountName);
+        AccountUtils.removeAccountInfo(_accountName);
         AccountStockUtils.deleteByAccountName(_accountName);
         HistoryBrowsingUtils.deleteHistoryRecordByAccountName(_accountName);
-        return resultIndex;
+        return 1;
     }
 
     @Override

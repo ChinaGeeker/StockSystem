@@ -6,12 +6,12 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
-import example.ruanjian.stocksystem.application.StockSystemApplication;
 import example.ruanjian.stocksystem.info.StockInfo;
-import example.ruanjian.stocksystem.utils.AccountStockUtils;
-import example.ruanjian.stocksystem.utils.NetworkUtils;
 import example.ruanjian.stocksystem.utils.StockUtils;
+import example.ruanjian.stocksystem.utils.NetworkUtils;
+import example.ruanjian.stocksystem.utils.AccountStockUtils;
 import example.ruanjian.stocksystem.utils.StockSystemConstant;
+import example.ruanjian.stocksystem.application.StockSystemApplication;
 
 public class RealTimeUpdateService extends Service
 {

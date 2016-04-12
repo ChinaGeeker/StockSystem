@@ -1,9 +1,7 @@
 package example.ruanjian.stocksystem.adapter;
 
-import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.content.Intent;
 import android.widget.TextView;
 import android.content.Context;
 import android.widget.BaseAdapter;
@@ -15,14 +13,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import example.ruanjian.stocksystem.R;
-import example.ruanjian.stocksystem.activity.StockInfoActivity;
-import example.ruanjian.stocksystem.info.StockInfo;
+import example.ruanjian.stocksystem.asyncTask.SearchStockInfoAsyncTask;
 import example.ruanjian.stocksystem.utils.AccountUtils;
 import example.ruanjian.stocksystem.info.AccountStockInfo;
 import example.ruanjian.stocksystem.utils.AccountStockUtils;
-import example.ruanjian.stocksystem.utils.HistoryBrowsingUtils;
 import example.ruanjian.stocksystem.utils.StockSystemConstant;
-import example.ruanjian.stocksystem.utils.StockUtils;
 
 public class StockLetterListAdapter extends BaseAdapter implements SectionIndexer
 {
@@ -106,14 +101,7 @@ public class StockLetterListAdapter extends BaseAdapter implements SectionIndexe
         {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setClass(_context, StockInfoActivity.class);
-                StockInfo stockInfo = StockUtils.getStockInfoByStockNumber(accountStockInfo.get_number());
-                HistoryBrowsingUtils.saveRecord(stockInfo, StockSystemConstant.HISTORY_VIEW_TYPE);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(StockSystemConstant.STOCK_INFO, stockInfo);
-                intent.putExtras(bundle);
-                _context.startActivity(intent);
+               new SearchStockInfoAsyncTask(_context).execute(accountStockInfo.get_number());
             }
         });
         String stockName = accountStockInfo.get_stockName();
